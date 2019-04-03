@@ -1,4 +1,4 @@
-## FOR.ai Reinforcement Learning Codebase
+## [FOR.ai](https://for.ai) Reinforcement Learning Codebase
 Modular codebase for reinforcement learning models training, testing and visualization.
 
 ### Features
@@ -27,7 +27,7 @@ python train.py --sys ... --hparams ... --output_dir ... --training False --rend
 ```
 
 ### Hyper-parameters
-Check [init_flags()](train.py), [defaults.py](rl/hparams/defaults.py) for default hyper-parameters, and check [hparams/dqn.py](rl/hparams/dqn.py) agent specific hyper-parameters examples.
+Check [init_flags()](https://github.com/for-ai/rl/blob/master/train.py#L17), [defaults.py](rl/hparams/defaults.py) for default hyper-parameters, and check [hparams/dqn.py](rl/hparams/dqn.py) agent specific hyper-parameters examples.
 - `hparams`: Which hparams to use, defined under [rl/hparams](rl/hparams)
 - `sys`: Which system environment to use.
 - `env`: Which RL environment to use.
