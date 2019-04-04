@@ -1,6 +1,8 @@
 ## [FOR.ai](https://for.ai) Reinforcement Learning Codebase
 Modular codebase for reinforcement learning models training, testing and visualization.
 
+**Contributors**: [Bryan M. Li](https://github.com/bryanlimy), [David Tao](https://github.com/taodav), [Alexander Cowen-Rivers](https://github.com/alexanderimanicowenrivers), [Siddhartha Rao Kamalakara](https://github.com/srk97), [Nitarshan Rajkumar](https://github.com/nitarshan), [Sourav Singh](https://github.com/souravsingh), [Aidan N. Gomez](https://github.com/aidangomez)
+
 ### Features
 - Agents: [DQN](rl/agents/algos/dqn.py), [Vanilla Policy Gradient](rl/agents/algos/vanilla_pg.py), [DDPG](rl/agents/algos/ddpg.py), [PPO](rl/agents/algos/ppo.py)
 - OpenAI Gym integration
@@ -8,8 +10,9 @@ Modular codebase for reinforcement learning models training, testing and visuali
   - Render (`--render`) and save (`--record_video`) environment replay
 - Model-free asynchronous training  (`--num_workers`)
 - Memory replay: [Simple](rl/memory/memory.py), [Proportional Prioritized Experience Replay](rl/memory/prioritized.py)
-- Modularized hyper-parameters setting (`--hparams` and [hparams.py](rl/hparams/defaults.py))
+- Modularized hyper-parameters setting (`--hparams` and [hparams/defaults.py](rl/hparams/defaults.py))
 - Modularized action functions ([action functions](rl/agents/algos/action_function/basic.py)) and gradient update functions ([compute gradient](rl/agents/algos/compute_gradient/basic.py))
+
 ### Requirements
 - TensorFlow
 - OpenAI Gym
@@ -40,3 +43,6 @@ Check [init_flags()](https://github.com/for-ai/rl/blob/master/train.py#L17), [de
 - `render`: Render game play.
 - `record_video`: Record game play.
 - `num_workers`, number of workers.
+
+### Contributing
+We'd love to accept your contributions to this project. Please feel free to open an issue, or submit a pull request as necessary. Contact us [team@for.ai](mailto:team@for.ai) for potential collaborations and joining [FOR.ai](https://for.ai).
