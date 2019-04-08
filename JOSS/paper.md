@@ -6,13 +6,11 @@ tags:
   - Tensorflow
   - Q-Learning
 authors:
-  - name: Aidan N. Gomez
-    affiliation: 1
   - name: Bryan M. Li
     affiliation: 1
   - name: David Tao
     affiliation: 1
-  - name: Siddhartha Rao Kamalakara
+  - name: Alexander Cowen-Rivers
     affiliation: 1
   - name: Siddhartha Rao Kamalakara
     affiliation: 1
@@ -20,7 +18,7 @@ authors:
     affiliation: 1
   - name: Sourav Singh
     affiliation: 1
-  - name: Alexander Cowen-Rivers
+  - name: Aidan N. Gomez
     affiliation: 1  
 affiliations:
  - name: FOR.ai
