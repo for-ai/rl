@@ -3,6 +3,12 @@ Modular codebase for reinforcement learning models training, testing and visuali
 
 **Contributors**: [Bryan M. Li](https://github.com/bryanlimy), [Alexander Cowen-Rivers](https://github.com/alexanderimanicowenrivers), [Piotr Kozakowski](https://github.com/koz4k), [David Tao](https://github.com/taodav), [Siddhartha Rao Kamalakara](https://github.com/srk97), [Nitarshan Rajkumar](https://github.com/nitarshan), [Hariharan Sezhiyan](https://github.com/hsezhiyan), [Sourav Singh](https://github.com/souravsingh), [Aidan N. Gomez](https://github.com/aidangomez)
 
+Example for recorded envrionment on various RL agents.
+
+| MountainCar-v0 |  Pendulum-v0 | VideoPinball-v0 | Tennis-v0 |
+|---|---|---|---|
+![MountainCar-v0](gif/mountaincar.gif)|![Pendulum-v0](gif/pendulum.gif)|![VideoPinball-v0](gif/pinball.gif)|![Tennis-v0](gif/tennis.gif)
+
 ### Features
 - Agents: [DQN](rl/agents/algos/dqn.py), [Vanilla Policy Gradient](rl/agents/algos/vanilla_pg.py), [DDPG](rl/agents/algos/ddpg.py), [PPO](rl/agents/algos/ppo.py)
 - Environments:
