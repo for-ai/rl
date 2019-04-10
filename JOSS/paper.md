@@ -34,7 +34,6 @@ output:
 
 This is a generic codebase built for reinforcement learning (RL) research in [TensorFlow](https://tensorflow.org), with popular RL agents pre-implemented as well as integration with [OpenAI Gym](https://gym.openai.com/) environment focusing on quick prototyping and deployment.
 
-|OpenAI Gym Environment e.g. `--env='MountainCar-v0'`|
 | MountainCar-v0 |  Pendulum-v0 | VideoPinball-v0 | Tennis-v0 |
 |---|---|---|---|
 ![MountainCar-v0](gif/mountaincar.gif)|![Pendulum-v0](gif/pendulum.gif)|![VideoPinball-v0](gif/pinball.gif)|![Tennis-v0](gif/tennis.gif)
@@ -42,16 +41,16 @@ This is a generic codebase built for reinforcement learning (RL) research in [Te
 # Functionality
 
 The following is a list of implemented features in the RL codebase.
-- Agents `hparams.agent`: 
+- Agents `hparams.agent`
   - Deep Q Networks (DQN)
   - Noisy DQN
   - Vanilla Policy Gradient
   - Deep Deterministic Policy Gradient (DDPG)
   - Proximal Policy Optimization (PPO)
-- Memory `hparams.memory`:
+- Memory `hparams.memory`
   - Simple random sampling
   - Proportional Prioritized Experience Replay
-- OpenAI Gym integration
+- OpenAI Gym integration `--env`
   - support both `Discrete` and `Box` environments
   - Render `--render` and record `--record_video` environment replay
 - Model-free asynchronous training  `--num_workers`
