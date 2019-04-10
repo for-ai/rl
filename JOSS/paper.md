@@ -1,12 +1,9 @@
 ---
-title: 'rl: A Modular codebase for reinforcement learning research'
+title: 'RL: A codebase for reinforcement learning research'
 tags:
   - Reinforcement Learning
   - Tensorflow
-  - DQN
-  - Policy Gradient
-  - DDPG
-  - PPO
+  - Gym
 authors:
   - name: Bryan M. Li
     affiliation: 1
@@ -25,7 +22,7 @@ authors:
 affiliations:
  - name: FOR.ai
    index: 1
- date: 8 April 2019
+date: 8 April 2019
 bibliography: paper.bib
 output:
   html_document:
