@@ -1,10 +1,12 @@
 ---
 title: 'rl: A Modular codebase for reinforcement learning research'
 tags:
-  - Python
   - Reinforcement Learning
   - Tensorflow
-  - Q-Learning
+  - DQN
+  - Policy Gradient
+  - DDPG
+  - PPO
 authors:
   - name: Bryan M. Li
     affiliation: 1
@@ -34,6 +36,7 @@ output:
 
 This is a generic codebase built for reinforcement learning (RL) research in [TensorFlow](https://tensorflow.org), with popular RL agents pre-implemented as well as integration with [OpenAI Gym](https://gym.openai.com/) environment focusing on quick prototyping and deployment.
 
+Example for recorded envrionment on various RL agents.
 | MountainCar-v0 |  Pendulum-v0 | VideoPinball-v0 | Tennis-v0 |
 |---|---|---|---|
 ![MountainCar-v0](gif/mountaincar.gif)|![Pendulum-v0](gif/pendulum.gif)|![VideoPinball-v0](gif/pinball.gif)|![Tennis-v0](gif/tennis.gif)
