@@ -1,5 +1,5 @@
 ---
-title: 'rl: A Modular codebase for reinforcement learning models training, testing and visualization.'
+title: 'rl: A Modular codebase for reinforcement learning research'
 tags:
   - Python
   - Reinforcement Learning
@@ -32,10 +32,33 @@ output:
 
 # Summary
 
-Reinforcement learning refers to a group of methods from artificial intelligence where an agent performs learning through trial and error [@Sutton.1998]. It differs from machine learning, since it requires no explicit labels; instead, the agent interacts continuously with its environment. That is, the agent starts in a specific state and then performs an action, based on which it transitions to a new state and, depending on the outcome, receives a reward. Different strategies (e.g. Policy Gradients) have been proposed to maximize the overall reward, resulting in a so-called policy, which defines the best possible action in each state. 
+This is a generic codebase built for reinforcement learning (RL) research in [TensorFlow](https://tensorflow.org), with popular RL agents pre-implemented as well as integration with [OpenAI Gym](https://gym.openai.com/) environment focusing on quick prototyping and deployment.
+
+|OpenAI Gym Environment e.g. `--env='MountainCar-v0'`|
+| MountainCar-v0 |  Pendulum-v0 | VideoPinball-v0 | Tennis-v0 |
+|---|---|---|---|
+![MountainCar-v0](gif/mountaincar.gif)|![Pendulum-v0](gif/pendulum.gif)|![VideoPinball-v0](gif/pinball.gif)|![Tennis-v0](gif/tennis.gif)
 
 # Functionality
 
-The *rl* package utilizes different mechanisms for reinforcement learning, including Q-learning, Policy Gradients, Proximal Policy Optimization, Deterministic Policy Gradient. It thereby learns an optimal policy based on past experience in the form of sample sequences consisting of states, actions and rewards. 
+The following is a list of implemented features in the RL codebase.
+- Agents `hparams.agent`: 
+  - Deep Q Networks (DQN)
+  - Noisy DQN
+  - Vanilla Policy Gradient
+  - Deep Deterministic Policy Gradient (DDPG)
+  - Proximal Policy Optimization (PPO)
+- Memory `hparams.memory`:
+  - Simple random sampling
+  - Proportional Prioritized Experience Replay
+- OpenAI Gym integration
+  - support both `Discrete` and `Box` environments
+  - Render `--render` and record `--record_video` environment replay
+- Model-free asynchronous training  `--num_workers`
+- Modularized hyper-parameters setting `--hparams` and [hparams/defaults.py](rl/hparams/defaults.py)
+- Modularized action functions [action functions](rl/agents/algos/action_function/basic.py)
+- Modularized gradient update functions [compute gradient](rl/agents/algos/compute_gradient/basic.py)
+- TensorBoard summary `tensorboard --logdir <output_dir>`
+
 
 # References
