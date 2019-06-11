@@ -1,23 +1,29 @@
 ## [FOR.ai](https://for.ai) Reinforcement Learning Codebase
 Modular codebase for reinforcement learning models training, testing and visualization.
 
-**Contributors**: [Bryan M. Li](https://github.com/bryanlimy), [David Tao](https://github.com/taodav), [Alexander Cowen-Rivers](https://github.com/alexanderimanicowenrivers), [Siddhartha Rao Kamalakara](https://github.com/srk97), [Nitarshan Rajkumar](https://github.com/nitarshan), [Sourav Singh](https://github.com/souravsingh), [Aidan N. Gomez](https://github.com/aidangomez)
+**Contributors**: [Bryan M. Li](https://github.com/bryanlimy), [David Tao](https://github.com/taodav), [Alexander Cowen-Rivers](https://github.com/alexanderimanicowenrivers), [Siddhartha Rao Kamalakara](https://github.com/srk97), [Nitarshan Rajkumar](https://github.com/nitarshan), [Sourav Singh](https://github.com/souravsingh), [Aidan N. Gomez](https://github.com/aidangomez), [Piotr Kozakowski](https://github.com/koz4k), [Hariharan Sezhiyan](https://github.com/hsezhiyan)
 
 ### Features
 - Agents: [DQN](rl/agents/algos/dqn.py), [Vanilla Policy Gradient](rl/agents/algos/vanilla_pg.py), [DDPG](rl/agents/algos/ddpg.py), [PPO](rl/agents/algos/ppo.py)
-- OpenAI Gym integration
-  - support both `Discrete` and `Box` environments
-  - Render (`--render`) and save (`--record_video`) environment replay
+- Environments:
+  - OpenAI [Gym](https://github.com/openai/gym)
+    - support both `Discrete` and `Box` environments
+    - render (`--render`) and save (`--record_video`) environment replay
+  - OpenAI [CoinRun](https://github.com/openai/coinrun)
 - Model-free asynchronous training  (`--num_workers`)
-- Memory replay: [Simple](rl/memory/memory.py), [Proportional Prioritized Experience Replay](rl/memory/prioritized.py)
-- Modularized hyper-parameters setting (`--hparams` and [hparams/defaults.py](rl/hparams/defaults.py))
-- Modularized action functions ([action functions](rl/agents/algos/action_function/basic.py)) and gradient update functions ([compute gradient](rl/agents/algos/compute_gradient/basic.py))
+- Memory replay: [Simple](rl/memory/simple.py), [Proportional Prioritized Experience Replay](rl/memory/prioritized.py)
+- Modularized
+    - [hyper-parameters setting](rl/hparams/defaults.py) (`--hparams`)
+    - [action functions](rl/agents/algos/action_function/basic.py))
+    - [compute gradient functions](rl/agents/algos/compute_gradient/basic.py)
+    - [advantage estimation](rl/agents/algos/advantage_estimator/basic.py)
+    - [learning rate schemes](rl/utils/lr_schemes.py)
 
 ### Requirements
-- TensorFlow
-- OpenAI Gym
-    - Atari `pip install 'gym[atari]'`
-- FFmpeg (`apt install ffmpeg` on Linux or `brew install ffmpeg` on macOS)
+- Run setup scripts to install all dependencies and environments
+```
+./setup.sh
+```
 
 ### Quick Start
 ```

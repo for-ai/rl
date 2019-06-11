@@ -1,10 +1,6 @@
-import numpy as np
 import tensorflow as tf
-
-from ..utils.logger import log_scalar
 from ..models.registry import get_model
 from ..memory.registry import get_memory
-
 from .algos.action_function.registry import get_action_function
 from .algos.compute_gradient.registry import get_gradient_function
 
@@ -19,8 +15,7 @@ class Agent():
 
     self._action_function = get_action_function(self._hparams.action_function)
 
-    # target update operations
-    self.target_update_op = []
+    self._state_processor_vars = None
 
     if hparams.pixel_input:
       self._state_processor = get_model(
@@ -60,14 +55,24 @@ class Agent():
     """
     raise NotImplementedError
 
+  def reset(self, worker_id=0):
+    """Reset the agent's internal state.
+
+    Called when switching between train/eval phases.
+    """
+
   def update(self, worker_id=0):
     """Called at the end of an episode. Compute updates to models, etc."""
     raise NotImplementedError
 
-  def update_target(self):
+  def update_targets(self):
     """ update target model with source model in self.target_update_op """
-    if self.target_update_op:
-      self._sess.run(self.target_update_op)
+    raise NotImplementedError
+
+  def clone_weights(self):
+    """ Clone target weights with shared weights before training to ensure all
+    models have identical weights to begin with """
+    raise NotImplementedError
 
   def _build_target_update_op(self):
     """ build update target models operations at self.target_update_op """

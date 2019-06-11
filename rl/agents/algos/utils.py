@@ -2,25 +2,22 @@ import numpy as np
 import tensorflow as tf
 
 
-def compute_discounted_rewards(hparams, rewards):
-  with tf.variable_scope("reward_discount"):
-    size = tf.to_float(tf.shape(rewards)[0])
-    mask = tf.sequence_mask(tf.range(size, 0, -1), size, dtype=tf.float32)
+def compute_discounted_rewards(rewards, dones, discount, last_value=None):
+  if last_value is not None:
+    future_cumulative_reward = last_value
+  else:
+    future_cumulative_reward = 0
+  discounted_rewards = np.empty_like(rewards, dtype=np.float32)
+  for i in reversed(range(len(rewards))):
+    future_cumulative_reward = (
+        rewards[i] + discount * future_cumulative_reward * ~dones[i]
+    )
+    discounted_rewards[i] = future_cumulative_reward
+  return discounted_rewards
 
-    def fn(i):
-      return tf.pow(hparams.gamma,
-                    tf.range(size - i - 1, -i - 1, -1, dtype=tf.float32))
 
-    gammas = mask * tf.map_fn(fn, tf.range(size, dtype=tf.float32))
-    discounted_reward = tf.reduce_sum(gammas * rewards[None, ::-1], -1)
-
-    if hparams.normalize_reward:
-      mean, var = tf.nn.moments(discounted_reward, 0)
-      # avoid division by zero
-      std = tf.sqrt(var) + 1e-10
-      discounted_reward = (discounted_reward - mean) / std
-
-    return discounted_reward
+def normalize(x):
+  return (x - x.mean()) / (x.std() + 1e-10)
 
 
 def one_hot(indices, depth):

@@ -1,4 +1,5 @@
-__all__ = ['basic', 'registry']
+__all__ = ['models', 'model', 'registry']
 
-from .basic import *
+from .models import *
+from .model import *
 from .registry import *

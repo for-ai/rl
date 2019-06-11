@@ -7,6 +7,7 @@ import tensorflow.keras.backend as K
 
 from rl.utils import flags
 from rl.utils.utils import ModeKeys
+from rl.utils.lr_schemes import update_learning_rate
 from rl.envs.registry import get_env
 from rl.utils.checkpoint import Checkpoint
 from rl.utils.logger import init_logger, log_scalar, log_graph
@@ -23,10 +24,10 @@ def init_flags():
   tf.flags.DEFINE_string("output_dir", None, "The output directory.")
   tf.flags.DEFINE_integer("train_steps", 2000000,
                           "Number of steps to train the agent")
-  tf.flags.DEFINE_integer('test_episodes', 10,
-                          "Number of episodes to test the agent")
   tf.flags.DEFINE_integer("eval_episodes", 10,
                           "Number of episodes to evaluate the agent")
+  tf.flags.DEFINE_integer('test_episodes', 10,
+                          "Number of episodes to test the agent")
   tf.flags.DEFINE_boolean("training", True, "training or testing")
   tf.flags.DEFINE_integer("copies", 1,
                           "Number of independent training/testing runs to do.")
@@ -78,19 +79,16 @@ def log_start_of_run(FLAGS, hparams, run):
   init_logger(hparams)
 
 
-def steps(hparams, agent, state, env, n, worker_id):
-  """ run envrionment n steps and return the latest output """
+def step(hparams, agent, state, env, worker_id):
+  """ run envrionment for one step and return the output """
+  if hparams.render:
+    env.render()
 
-  for _ in range(n):
+  action = agent.act(state, worker_id)
+  state, reward, done, _ = env.step(action)
 
-    if hparams.render:
-      env.render()
-
-    action = agent.act(state, worker_id)
-    state, reward, done, info = env.step(action)
-
-    if done:
-      break
+  if done:
+    state = env.reset()
 
   return action, reward, done, state
 
@@ -98,63 +96,63 @@ def steps(hparams, agent, state, env, n, worker_id):
 def train(worker_id, agent, hparams, checkpoint):
   env = get_env(hparams)
 
+  state = env.reset()
   while hparams.global_step < hparams.train_steps:
     hparams.mode[worker_id] = ModeKeys.TRAIN
 
-    state = env.reset()
-    done = False
+    last_state = state
 
-    while not done:
+    action, reward, done, state = step(
+        hparams, agent, last_state, env, worker_id)
 
-      last_state = state
+    agent.observe(last_state, action, reward, done, state, worker_id)
 
-      action, reward, done, state = steps(hparams, agent, last_state, env,
-                                          hparams.n_steps, worker_id)
+    if done:
+      hparams.local_episode[worker_id] += 1
+      log_scalar('episodes/worker_%d' % worker_id,
+                 hparams.local_episode[worker_id])
 
-      agent.observe(last_state, action, reward, done, state, worker_id)
+    hparams.global_step += 1
+    hparams.total_step += 1
+    hparams.local_step[worker_id] += 1
+    update_learning_rate(hparams)
 
-      if done:
-        hparams.local_episode[worker_id] += 1
-        log_scalar('episodes/worker_%d' % worker_id,
-                   hparams.local_episode[worker_id])
-
-      if hparams.local_step[worker_id] % hparams.test_interval == 0:
-        test(worker_id, agent, env, hparams)
-        if worker_id == 0:
-          checkpoint.save()
-        done = True
-
-      hparams.global_step += 1
-      hparams.total_step += 1
-      hparams.local_step[worker_id] += 1
+    if hparams.local_step[worker_id] % hparams.eval_interval == 0:
+      agent.reset(worker_id)
+      evaluate(worker_id, agent, env, hparams)
+      if worker_id == 0:
+        checkpoint.save()
+      state = env.reset()
+      agent.reset(worker_id)
 
   env.close()
 
 
-def test(worker_id, agent, env, hparams):
-  hparams.mode[worker_id] = ModeKeys.TEST
+def evaluate(worker_id, agent, env, hparams):
+  hparams.mode[worker_id] = ModeKeys.EVAL
   rewards = []
 
-  for i in range(hparams.test_episodes):
+  for i in range(hparams.eval_episodes):
     state = env.reset()
     done = False
     episode_reward = 0
     while not done:
       last_state = state
-      action, reward, done, state = steps(
-          hparams, agent, last_state, env, n=1, worker_id=worker_id)
+      action, reward, done, state = step(
+          hparams, agent, last_state, env, worker_id=worker_id)
       episode_reward += reward
       hparams.total_step += 1
     rewards.append(episode_reward)
 
   log_scalar('rewards/worker_%d' % worker_id, np.mean(rewards))
+  log_scalar('rewards_std/worker_%d' % worker_id, np.std(rewards))
 
 
-def evaluate(hparams, agent):
-  hparams.mode[0] = ModeKeys.EVAL
+def test(hparams, agent):
+  hparams.mode[0] = ModeKeys.TEST
   env = get_env(hparams)
 
-  for i in range(hparams.eval_episodes):
+  for i in range(hparams.test_episodes):
     state = env.reset()
     done = False
     episode_reward = 0
@@ -162,8 +160,8 @@ def evaluate(hparams, agent):
       if hparams.render:
         env.render()
       last_state = state
-      action, reward, done, state = steps(
-          hparams, agent, last_state, env, n=1, worker_id=0)
+      action, reward, done, state = step(
+          hparams, agent, last_state, env, worker_id=0)
       episode_reward += reward
     print("episode %d\trewards %d" % (i, episode_reward))
 
@@ -186,7 +184,7 @@ def _run(FLAGS):
       if hparams.training:
         log_graph()
 
-        agent.update_target()
+        agent.clone_weights()
 
         if hparams.num_workers == 1:
           train(0, agent, hparams, checkpoint)
@@ -203,7 +201,7 @@ def _run(FLAGS):
           for worker in workers:
             worker.join()
       else:
-        evaluate(hparams, agent)
+        test(hparams, agent)
 
     hparams = init_hparams(FLAGS)
 

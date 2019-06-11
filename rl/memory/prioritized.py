@@ -1,7 +1,7 @@
 import numpy as np
 from collections import namedtuple
 
-from .memory import Memory
+from .memory import Memory, TransitionBatch
 from .registry import register
 
 
@@ -85,7 +85,7 @@ class SumTree:
     self.size = 0
 
 
-@register
+@register("prioritized")
 class PrioritizedMemory(Memory):
   """ Proportional Prioritized Experience Replay
   Data structure which allows for storage of arbitrary data, and weighted 
@@ -121,65 +121,65 @@ class PrioritizedMemory(Memory):
     assert 0 <= hparams.memory_priority_control <= 1
     assert 0 <= hparams.memory_priority_compensation <= 1
 
-    self.worker_id = worker_id
-    self.capacity = hparams.memory_size
-    # corresponds to alpha in paper
-    self.priority_control = hparams.memory_priority_control
-    # beta in paper
-    self.priority_compensation = hparams.memory_priority_compensation
-    self.tree = SumTree(self.capacity)
+    super(PrioritizedMemory, self).__init__(hparams, worker_id)
+
+    self.tree = SumTree(self._hparams.memory_size)
     # small value used to ensure priorities are greater than 0
     self.eps = 1e-10
-    self.MemoryEntry = namedtuple(
-        "MemoryEntry",
-        ["last_state", "action", "reward", "discount", "done", "state"])
 
-  def add_sample(self, last_state, action, reward, discount, done, state):
-    memory_entry = self.MemoryEntry(last_state, action, reward, discount, done,
-                                    state)
+  def add_sample(self, **kwargs):
+    transition = TransitionBatch(**kwargs)
     priority = self.eps + (1 if self.tree.size == 0 else self.tree.max)
-    self.tree.add(memory_entry, priority)
+    self.tree.add(transition, priority)
 
   def __len__(self):
     return len(self.tree)
 
-  def sample(self, batch_size=None):
-    if batch_size == None:
-      indices = list(range(self.tree.size))
-      samples = self.tree.data[:self.tree.size]
-      weights = self.tree.leaves
-    else:
-      priorities = self.tree.sum * np.random.rand(batch_size)
-      samples, indices, weights = [], [], []
-      for p in priorities:
-        index, weight, sample = self.tree.get(p)
-        indices.append(index)
-        weights.append(weight)
-        samples.append(sample)
+  def sample(self, batch_size):
+    priorities = self.tree.sum * np.random.rand(batch_size)
+    samples, indices, weights = [], [], []
+    for p in priorities:
+      index, weight, sample = self.tree.get(p)
+      indices.append(index)
+      weights.append(weight)
+      samples.append(sample)
 
     indices = np.array(indices)
     # normalize importance sampling weights, to only scale gradient update downwards
     max_weight = ((self.tree.sum / self.tree.min) /
-                  self.tree.size)**self.priority_compensation
+                  self.tree.size)**self._hparams.memory_priority_compensation
     weights = (((self.tree.sum / np.array(weights)) / self.tree.size)**
-               self.priority_compensation) / max_weight
+               self._hparams.memory_priority_compensation) / max_weight
 
-    last_states = np.array([s.last_state for s in samples])
-    actions = np.array([s.action for s in samples])
-    rewards = np.array([s.reward for s in samples])
-    done = np.array([s.done for s in samples])
-    states = np.array([s.state for s in samples])
-
-    return indices, weights, last_states, actions, rewards, done, states
+    first_sample = samples[0]
+    fields = {
+        field: np.array([getattr(sample, field) for sample in samples])
+        for field in first_sample._fields
+        if getattr(first_sample, field) is not None
+    }
+    fields["index"] = indices
+    fields["weight"] = weights
+    return TransitionBatch(**fields)
 
   def update(self, indices, priorities):
     """ Update sample priorities """
     for i, p in zip(indices, priorities):
       p = self.eps + p
-      self.tree.update(i, p**self.priority_control)
+      self.tree.update(i, p**self._hparams.memory_priority_control)
 
   def clear(self):
     self.tree.clear()
 
   def size(self):
     return self.tree.size
+
+  def get_sequence(self, name, indices=None):
+    if indices is None:
+      indices = range(self.size())
+    return np.array([getattr(self.tree.data[index], name) for index in indices])
+
+  def set_sequence(self, name, values, indices=None):
+    if indices is None:
+      indices = range(self.size())
+    for (index, value) in zip(indices, values):
+      self.tree.data[index] = self.tree.data[index]._replace(**{name: value})

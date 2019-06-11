@@ -1,7 +1,6 @@
 import os
 import gym
 import numpy as np
-import roboschool
 from gym import wrappers
 from .env import Environment
 from .registry import register_env, get_reward_augmentation
