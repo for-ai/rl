@@ -6,13 +6,11 @@ python:
 install:
   - git clone https://github.com/$TRAVIS_REPO_SLUG.git ~/$TRAVIS_REPO_SLUG
   - cd ~/$TRAVIS_REPO_SLUG
-  - git checkout $TRAVIS_BRANCH
-  - export FILES="$(git diff --name-only master)"
-  - pip install -r requirements.txt
+  - sh ~/$TRAVIS_REPO_SLUG/rl/setup.sh
 
 # command to run tests
 script:
-  - cd ~/$TRAVIS_REPO_SLUG/rl;
+  - cd ~/$TRAVIS_REPO_SLUG/;
   - python3 train.py --sys local --hparams dqn_cartpole --train_steps 10
   - python3 train.py --sys local --hparams vpg_cartpole --train_steps 10
   - python3 train.py --sys local --hparams ppo_cartpole --train_steps 10
