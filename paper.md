@@ -132,6 +132,10 @@ Record the video with “--record_video bool”, which outputs a .mp4 of each re
 # Conclusion
 We have outlined the benefits of using a highly modularised reinforcement learning codebase. The next stages of development for the RL codebase are implementing more SOTA model-free RL techniques (GAE, Rainbow, SAC, IMPALA), introducing model-based approaches, such as World Models`@ha:2018`, integrating into an open-sourced experiment managing tool and expanding the codebases compatibility with a broader range of environments, such as Habitat `@savva:2019`. We would also like to see automatic hyperparameter optimization techniques to be integrated, such as Bayesian Optimization method which was crucial to the success of some of DeepMinds most considerable reinforcement learning feats`@chen:2018`.
 
+# Acknowledgements
+
+We would like to thank all other members of For.ai, for useful discussions and feedback. 
+
 # References
 
 
