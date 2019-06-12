@@ -34,6 +34,7 @@ output:
 ---
 
 # Abstract 
+
 Vast reinforcement learning (RL) research groups, such as DeepMind and OpenAI, have their internal (private) reinforcement learning codebases, which enable quick prototyping and comparing of ideas to many SOTA methods. We argue the five fundamental properties of a sophisticated research codebase are; modularity, reproducibility, many RL algorithms pre-implemented, speed and ease of running on different hardware/ integration with visualization packages. 
 Currently, there does not exist any RL codebase, to the author's knowledge, which contains all the five properties, particularly with TensorBoard logging and abstracting away cloud hardware such as TPU's from the user. The codebase aims to help distil the best research practices into the community as well as ease the entry access and accelerate the pace of the field. 
 
@@ -67,20 +68,22 @@ To accomplish this, we chose to modularise the codebase in the hierarchy shown b
 ```
 rl_codebase
 |- train.py
+|---> memory
+|   |- registry.py
+|---> hparams
+|   |- registry.py
+|---> envs
+|   |- registry.py
+|---> models
+|   |- registry.py
 |---> agents
 |   |- registry.py
-|   |---> models
-|   |   |- registry.py
 |   |---> algos
 |   |   |- registry.py
 |   |   |---> act_select
 |   |   |   |- registry.py
 |   |   |---> grad_comp
 |   |   |   |- registry.py
-|---> hparams
-|   |- registry.py
-|---> envs
-|   |- registry.py
 ```
 
 Our modularisation enabled simple and easy to read implementations of each component, such as the Agent, Algo and Environment class, as shown below. 
