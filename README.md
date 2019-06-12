@@ -1,4 +1,4 @@
-## [FOR.ai](https://for.ai) Reinforcement Learning Codebase
+## [FOR.ai](https://for.ai) Reinforcement Learning Codebase [![Build Status](https://travis-ci.org/for-ai/rl.svg?branch=master)](https://travis-ci.org/for-ai/rl)
 Modular codebase for reinforcement learning models training, testing and visualization.
 
 **Contributors**: [Bryan M. Li](https://github.com/bryanlimy), [Alexander Cowen-Rivers](https://github.com/alexanderimanicowenrivers), [Piotr Kozakowski](https://github.com/koz4k), [David Tao](https://github.com/taodav), [Siddhartha Rao Kamalakara](https://github.com/srk97), [Nitarshan Rajkumar](https://github.com/nitarshan), [Hariharan Sezhiyan](https://github.com/hsezhiyan), [Sourav Singh](https://github.com/souravsingh), [Aidan N. Gomez](https://github.com/aidangomez)
@@ -18,6 +18,12 @@ Modular codebase for reinforcement learning models training, testing and visuali
     - [compute gradient functions](rl/agents/algos/compute_gradient/basic.py)
     - [advantage estimation](rl/agents/algos/advantage_estimator/basic.py)
     - [learning rate schemes](rl/utils/lr_schemes.py)
+
+Example for recorded envrionment on various RL agents.
+
+| MountainCar-v0 |  Pendulum-v0 | VideoPinball-v0 | Tennis-v0 |
+|---|---|---|---|
+![MountainCar-v0](gif/mountaincar.gif)|![Pendulum-v0](gif/pendulum.gif)|![VideoPinball-v0](gif/pinball.gif)|![Tennis-v0](gif/tennis.gif)
 
 ### Requirements
 - Run setup scripts to install all dependencies and environments
