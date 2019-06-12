@@ -13,7 +13,11 @@ def get_hparams(hparams_list):
   """Fetches a merged group of hyperparameter sets (chronological priority)."""
   final = tf.contrib.training.HParams()
   for name in hparams_list.split("-"):
-    curr = _HPARAMS[name]
+    try:
+      curr = _HPARAMS[name]
+    except KeyError as e:
+      print('Hparams {} is not defined, please check rl/hparams.'.format(name))
+      exit()
     final_dict = final.values()
     for k, v in curr.values().items():
       if k not in final_dict:

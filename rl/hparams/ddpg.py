@@ -6,12 +6,18 @@ from .registry import register
 def ddpg():
   hps = default()
   hps.models = ['DDPGActor', 'DDPGCritic']
-  hps.grad_function = "mean_squared_error"
+  hps.grad_function = "ddpg"
   hps.action_function = "normal_noise_action"
   hps.agent = "DDPG"
   hps.batch_size = 128
-  hps.actor_lr = 1e-4
-  hps.critic_lr = 1e-3
+  hps.lr = {
+    "actor_lr": 1e-4,
+    "critic_lr": 1e-3
+  }
+  hps.lr_decay = {
+    "actor_lr": "no_decay",
+    "critic_lr": "no_decay"
+  }
   hps.soft_replace_ratio = 1e-3
   hps.gamma = 0.99
   hps.max_variance = 2
@@ -33,7 +39,7 @@ def ddpg_cartpole():
 def ddpg_pendulum():
   hps = ddpg()
   hps.env = "Pendulum-v0"
-  hps.memory = "PrioritizedMemory"
+  hps.memory = "prioritized"
   hps.memory_size = 50000
   # prioritized experience replay
   hps.memory_update_priorities = True
@@ -73,4 +79,11 @@ def ddpg_carracing():
   hps.critic_lr = 0.0001
   hps.soft_replace_ratio = 0.01
   hps.gamma = 0.90
+  return hps
+
+
+@register
+def ddpg_coinrun():
+  hps = ddpg()
+  hps.env = 'CoinRun'
   return hps

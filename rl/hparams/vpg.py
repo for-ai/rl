@@ -10,10 +10,16 @@ def vpg():
   hps.action_function = "non_uniform_random_action"
   hps.grad_function = "policy_gradient"
   hps.normalize_reward = True
-  hps.learning_rate = 0.001
+  hps.lr = {
+    "lr": 0.001
+  }
+  hps.ly_decay = {
+    "lr": "no_decay"
+  }
   hps.gamma = 0.95
   hps.hidden_size = 50
   hps.memory_size = 50000
+  hps.num_episodes = 1  # number of episodes to collect for every update
   return hps
 
 
@@ -21,6 +27,9 @@ def vpg():
 def vpg_cartpole():
   hps = vpg()
   hps.env = "CartPole-v1"
+  hps.gamma = 0.99
+  hps.batch_size = 128
+  hps.num_episodes = 4
   return hps
 
 
@@ -38,5 +47,4 @@ def vpg_pong():
   hps.env = "Pong-v0"
   hps.gamma = 0.99
   hps.hidden_size = 200
-  hps.n_steps = 10
   return hps

@@ -1,37 +1,37 @@
+from collections import namedtuple
 import random
 import numpy as np
 
-from .registry import register
+
+_required_fields = ["last_state", "action", "reward", "done", "state"]
+_optional_fields = [
+    "discount", "discounted_reward", "advantage", "index", "weight"]
+TransitionBatch = namedtuple(
+    "TransitionBatch", _required_fields + _optional_fields)
+TransitionBatch.__new__.__defaults__= (None,) * len(_optional_fields)
 
 
-@register
 class Memory:
-  """ Simple memory """
+  """ Base class for memories """
 
   def __init__(self, hparams, worker_id):
-    self.worker_id = worker_id
-    self.capacity = hparams.memory_size
-    self.memory = []
+    self._hparams = hparams
+    self._worker_id = worker_id
 
-  def add_sample(self, last_state, action, reward, discount, done, state):
-    if self.size() > self.capacity:
-      self.memory.pop(0)
-    self.memory.append((last_state, action, reward, discount, done, state))
+  def add_sample(self, **kwargs):
+    raise NotImplementedError
 
-  def sample(self, batch_size=None):
-    sample_size = batch_size if batch_size <= self.size() else self.size()
-    samples = random.sample(self.memory, sample_size)
-    indices = np.zeros(len(samples))
-    weights = np.ones(len(samples))
-    last_states = np.array([s[0] for s in samples])
-    actions = np.array([s[1] for s in samples])
-    rewards = np.array([s[2] for s in samples])
-    done = np.array([s[4] for s in samples])
-    states = np.array([s[5] for s in samples])
-    return indices, weights, last_states, actions, rewards, done, states
+  def sample(self, batch_size):
+    raise NotImplementedError
 
   def size(self):
-    return len(self.memory)
+    raise NotImplementedError
 
   def clear(self):
-    self.memory = []
+    raise NotImplementedError
+
+  def get_sequence(self, name, indices=None):
+    raise NotImplementedError
+
+  def set_sequence(self, name, values, indices=None):
+    raise NotImplementedError

@@ -14,5 +14,4 @@ def get_model(hparams, register, name):
   register: string, the register name of the model
   name: string, the name scope of the model
   '''
-
   return _MODELS[register](hparams, name)

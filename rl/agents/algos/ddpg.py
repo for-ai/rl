@@ -1,12 +1,11 @@
 import numpy as np
 import tensorflow as tf
-
 from ..agent import Agent
-from .utils import one_hot, OrnsteinUhlenbeckActionNoise
 from ..registry import register
+from ...utils.utils import ModeKeys
 from ...utils.logger import log_scalar
 from ...models.registry import get_model
-from ...utils.utils import ModeKeys
+from .utils import one_hot, OrnsteinUhlenbeckActionNoise
 
 
 @register
@@ -16,7 +15,6 @@ class DDPG(Agent):
   def __init__(self, sess, hparams):
     super().__init__(sess, hparams)
     hparams.variance = hparams.max_variance
-    hparams.learning_rate = hparams.critic_lr
 
     self.actor = get_model(hparams, register="DDPGActor", name="actor")
     self.critic = get_model(hparams, register="DDPGCritic", name="critic")
@@ -41,16 +39,25 @@ class DDPG(Agent):
     if self._hparams.action_space_type == "Discrete":
       action = one_hot(action, self._hparams.num_actions)
 
-    self._memory[worker_id].add_sample(last_state, action, reward,
-                                       self._hparams.gamma, done, state)
+    self._memory[worker_id].add_sample(
+        last_state=last_state,
+        action=action,
+        reward=reward,
+        discount=self._hparams.gamma,
+        done=done,
+        state=state,
+    )
 
     self.update(worker_id)
 
     self._variance_decay(worker_id)
 
   def act(self, state, worker_id=0):
+    if state.ndim < len(self._hparams.state_shape) + 1:
+      state = np.expand_dims(state, axis=0)
+
     action = self._sess.run(
-        self.action_pred, feed_dict={self.last_states: state[None, :]})
+        self.action_pred, feed_dict={self.last_states: state})
 
     if self._hparams.mode[worker_id] == ModeKeys.TRAIN:
       action = action + self.actor_noise()
@@ -65,8 +72,17 @@ class DDPG(Agent):
       action = np.squeeze(action)
     return action
 
+  def clone_weights(self):
+    self.target_actor.set_weights(self.actor.get_weights())
+    self.target_critic.set_weights(self.critic.get_weights())
+
+  def update_targets(self):
+    self._sess.run(self.target_update_op)
+
   def _build_target_update_op(self):
     with tf.variable_scope("update_target_networks"):
+
+      self.target_update_op = []
 
       def soft_replace(source, target):
         ratio = self._hparams.soft_replace_ratio
@@ -98,6 +114,11 @@ class DDPG(Agent):
     last_states = self.process_states(self.last_states)
     states = self.process_states(self.states)
 
+    if self._hparams.pixel_input:
+      self.cnn_vars = self._state_processor.trainable_weights
+    else:
+      self.cnn_vars = None
+
     self.actor_pred = self.actor(last_states)
 
     self.action_pred = self.actor_pred
@@ -123,48 +144,48 @@ class DDPG(Agent):
       self.critic_loss = tf.losses.mean_squared_error(
           labels=td_target, predictions=critic_pred_from_experience)
 
-    self.critic_train_op = tf.train.AdamOptimizer(
-        learning_rate=self._hparams.critic_lr,
-        name="critic_optimizer").minimize(
-            self.critic_loss, var_list=self.critic.trainable_weights)
-
-    self.actor_train_op = tf.train.AdamOptimizer(
-        learning_rate=self._hparams.actor_lr, name="actor_optimizer").minimize(
-            self.actor_loss, var_list=self.actor.trainable_weights)
+    self.actor_train_op, self.critic_train_op, self.state_processor_train_op = self._grad_function(
+        self.actor_loss,
+        self.critic_loss,
+        self._hparams,
+        var_list={
+            'actor_vars': self.actor.trainable_weights,
+            'critic_vars': self.critic.trainable_weights,
+            'cnn_vars': self.cnn_vars
+        })
 
     self._build_target_update_op()
 
   def update(self, worker_id=0):
-    if self._hparams.local_step[worker_id] == 0:
-      self.target_actor.set_weights(self.actor.get_weights())
-      self.target_critic.set_weights(self.critic.get_weights())
-
     memory = self._memory[worker_id]
 
-    if self._hparams.local_step[worker_id] == 0:
-      # make sure target and source models are the same in the beginning
-      self.target_actor.set_weights(self.actor.get_weights())
-      self.target_critic.set_weights(self.critic.get_weights())
-
     if self._hparams.training and memory.size() >= self._hparams.batch_size:
-      _, _, last_states, actions, rewards, done, states = memory.sample(
-          self._hparams.batch_size)
+      batch = memory.sample(self._hparams.batch_size)
 
-      critic_loss, _ = self._sess.run(
-          [self.critic_loss, self.critic_train_op],
+      critic_loss, _, _ = self._sess.run(
+          [
+              self.critic_loss, self.critic_train_op,
+              self.state_processor_train_op
+          ],
           feed_dict={
-              self.last_states: last_states,
-              self.actions: np.reshape(actions,
+              self.last_states: batch.last_state,
+              self.actions: np.reshape(batch.action,
                                        (-1, self._hparams.num_actions)),
-              self.done: np.expand_dims(done.astype(float), axis=-1),
-              self.rewards: np.expand_dims(rewards.astype(float), axis=-1),
-              self.states: states
+              self.done: np.expand_dims(batch.done.astype(float), axis=-1),
+              self.rewards: np.expand_dims(
+                  batch.reward.astype(float), axis=-1),
+              self.states: batch.state
           })
 
-      actor_loss, _ = self._sess.run([self.actor_loss, self.actor_train_op],
-                                     feed_dict={self.last_states: last_states})
+      actor_loss, _ = self._sess.run(
+          [self.actor_loss, self.actor_train_op],
+          feed_dict={self.last_states: batch.last_state})
 
       log_scalar("loss/actor/worker_%d" % worker_id, actor_loss)
       log_scalar("loss/critic/worker_%d" % worker_id, critic_loss)
 
-      self.update_target()
+      if self._hparams.pixel_input:
+        log_scalar("loss/state_processor/worker_%d" % worker_id,
+                   (actor_loss + critic_loss) / 2)
+
+      self.update_targets()

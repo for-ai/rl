@@ -9,13 +9,18 @@ def dqn():
   hps.agent = "DQN"
   hps.action_function = "epsilon_action"
   hps.grad_function = "huber_loss"
-  hps.learning_rate = 0.001
+  hps.lr = {
+    "lr": 0.001
+  }
+  hps.lr_decay = {
+    "lr": "no_decay"
+  }
   hps.max_epsilon = 1.0
   hps.epsilon_decay_rate = 0.995
   hps.gamma = 0.99
   hps.hidden_size = 50
   hps.update_target_interval = 2500
-  hps.memory = "PrioritizedMemory"
+  hps.memory = "prioritized"
   hps.memory_size = 50000
   # prioritized experience replay
   hps.memory_update_priorities = True
@@ -37,7 +42,9 @@ def dqn_mountaincar():
   hps = dqn()
   hps.env = "MountainCar-v0"
   hps.reward_augmentation = "mountain_car_default"
-  hps.learning_rate = 0.01
+  hps.lr = {
+    "lr": 0.01
+  }
   hps.gamma = 0.95
   return hps
 
@@ -46,8 +53,9 @@ def dqn_mountaincar():
 def dqn_pong_ram():
   hps = dqn()
   hps.env = "Pong-ram-v0"
-  hps.learning_rate = 0.0001
-  hps.n_steps = 5
+  hps.lr = {
+    "lr": 0.0001
+  }
   return hps
 
 

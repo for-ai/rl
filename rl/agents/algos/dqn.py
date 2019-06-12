@@ -2,8 +2,8 @@ import numpy as np
 import tensorflow as tf
 from ..agent import Agent
 from ..registry import register
+from .utils import copy_variables_op
 from ...models.registry import get_model
-from ..algos.utils import copy_variables_op
 from ...utils.logger import log_scalar, log_histogram
 
 
@@ -39,28 +39,43 @@ class DQN(Agent):
                self._hparams.epsilon[worker_id])
 
   def act(self, state, worker_id=0):
+    if state.ndim < len(self._hparams.state_shape) + 1:
+      state = np.expand_dims(state, axis=0)
+
     action_distribution = self._sess.run(
-        self.logits, feed_dict={self.last_states: state[None, :]})
+        self.logits, feed_dict={self.last_states: state})
     return self._action_function(self._hparams, action_distribution, worker_id)
 
   def observe(self, last_state, action, reward, done, state, worker_id=0):
     if done:
       state = np.zeros(state.shape)
 
-    self._memory[worker_id].add_sample(last_state, action, reward,
-                                       self._hparams.gamma, done, state)
+    self._memory[worker_id].add_sample(
+        last_state=last_state,
+        action=action,
+        reward=reward,
+        discount=self._hparams.gamma,
+        done=done,
+        state=state,
+    )
 
     if self._hparams.local_step[
         worker_id] % self._hparams.batch_size == 0 or done:
       self.update(worker_id)
 
     if self._hparams.global_step % self._hparams.update_target_interval == 0:
-      self.update_target()
+      self.update_targets()
+
+  def clone_weights(self):
+    self.target_model.set_weights(self.model.get_weights())
+
+  def update_targets(self):
+    self._sess.run(self.target_update_op)
 
   def _build_target_update_op(self):
     with tf.variable_scope("update_target_networks"):
-      self.target_update_op.extend(
-          copy_variables_op(source=self.model, target=self.target_model))
+      self.target_update_op = copy_variables_op(
+          source=self.model, target=self.target_model)
 
   def build(self):
     self.last_states = tf.placeholder(
@@ -76,6 +91,10 @@ class DQN(Agent):
     last_states = self.process_states(self.last_states)
     states = self.process_states(self.states)
 
+    if self._hparams.pixel_input:
+      self.cnn_vars = self._state_processor.trainable_weights
+    else:
+      self.cnn_vars = None
     # predict q value Q(s, a)
     self.logits = self.model(last_states)
     # convert action to one hot vector
@@ -90,35 +109,40 @@ class DQN(Agent):
     # temporal difference
     self.td_error = tf.abs(target_q - predict_q)
 
-    self.loss, self.train_op = self._grad_function(
+    self.loss, self.train_op, self.state_processor_train_op = self._grad_function(
         preds=predict_q,
         targets=target_q,
         hparams=self._hparams,
         weights=self.importance_sampling_weights,
-        var_list=self.model.trainable_weights)
+        var_list={
+            'agent_vars': self.model.trainable_weights,
+            'cnn_vars': self.cnn_vars
+        })
 
-    # update target network
     self._build_target_update_op()
 
   def update(self, worker_id=0):
     memory = self._memory[worker_id]
-    if self._hparams.training and memory.size() > self._hparams.batch_size:
-      indices, weights, last_states, actions, rewards, done, states = memory.sample(
-          self._hparams.batch_size)
 
-      loss, _, td_errors = self._sess.run(
-          [self.loss, self.train_op, self.td_error],
+    if self._hparams.training and memory.size() > self._hparams.batch_size:
+      batch = memory.sample(self._hparams.batch_size)
+
+      loss, _, td_errors, _ = self._sess.run(
+          [
+              self.loss, self.train_op, self.td_error,
+              self.state_processor_train_op
+          ],
           feed_dict={
-              self.last_states: last_states,
-              self.actions: actions,
-              self.rewards: rewards,
-              self.done: done,
-              self.states: states,
-              self.importance_sampling_weights: weights
+              self.last_states: batch.last_state,
+              self.actions: batch.action,
+              self.rewards: batch.reward,
+              self.done: batch.done,
+              self.states: batch.state,
+              self.importance_sampling_weights: batch.weight
           })
 
-      if self._hparams.memory == "PrioritizedMemory":
-        memory.update(indices, td_errors)
+      if self._hparams.memory == "prioritized":
+        memory.update(batch.index, td_errors)
 
       if self._hparams.num_workers > 1:
         memory.clear()
