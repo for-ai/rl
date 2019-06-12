@@ -34,7 +34,7 @@ output:
 ---
 
 RL: Generic reinforcement learning codebase in TensorFlow
-Bryan M. Li1, David Tao1, Alexander Cowen-Rivers1, Siddhartha Rao Kamalakara1, Nitarshan Rajkumar1, Aidan N. Gomez1
+Bryan M. Li1, Alexander Cowen-Rivers1, Piotr Kozakowski1, David Tao1, Siddhartha Rao Kamalakara1, Hariharan Sezhiyan1, Nitarshan Rajkumar1, Aidan N. Gomez1
 1FOR.ai
 
 
