@@ -44,7 +44,7 @@ Currently, there does not exist any RL codebase, to the authors knowledge, which
 
 # Related Work
 
-There are currently various implementations available for reinforcement learning codebase like OpenAI baselines`@dhariwal:2017`,  Stable baselines `@hill2019`, Tensorforce`@schaarschmidt:2017`, Ray rllib`@liang:2017`, Intel Coach`@caspi:2017`, Keras-RL `@kerasrl:2019`, Dopamine baselines `@castro:2018` and TF-Agents `@guadarramatf`. Ray rllib `@liang:2017` is amongst the strongest of existing RL frameworks, supporting; distributed operations, TensorFlow`@abadi:2016`, PyTorch and multi-agent reinforcement learning (MARL). Unlike Ray rllib, we choose to focus on Tensorflow support, allowing us to integrate specific framework visulisation and experiment tracking into our codeabse. Ontop of this, we are developing a Kuberenetes script for MacOS and Linux users to connect to any cloud computing platform, such as Google TPU’s, Amazon AWS etc. Most other frameworks are plagued with problems like usability issues (difficult to get started and increment over), very little modularity in code (no/ little hierarchy and code reuse), no asynchronous training support, weak support for TensorBoard logging and so on. All these problems are solved by our project, which is a generic codebase built for reinforcement learning (RL) research in Tensorflow`@schaarschmidt:2017`, with popular RL agents pre-implemented as well as integration with OpenAI Gym`@brockman:2016` environment focusing on quick prototyping and visualization.
+There are currently various implementations available for reinforcement learning codebase like OpenAI baselines`@dhariwal:2017`,  Stable baselines `@hill2019`, Tensorforce`@schaarschmidt:2017`, Ray rllib`@liang:2017`, Intel Coach`@caspi:2017`, Keras-RL `@kerasrl:2019`, Dopamine baselines `@castro:2018` and TF-Agents `@guadarramatf`. Ray rllib `@liang:2017` is amongst the strongest of existing RL frameworks, supporting; distributed operations, TensorFlow`@abadi:2016`, PyTorch`@paszke:2017` and multi-agent reinforcement learning (MARL). Unlike Ray rllib, we choose to focus on Tensorflow support, allowing us to integrate specific framework visulisation and experiment tracking into our codeabse. Ontop of this, we are developing a Kuberenetes script for MacOS and Linux users to connect to any cloud computing platform, such as Google TPU’s, Amazon AWS etc. Most other frameworks are plagued with problems like usability issues (difficult to get started and increment over), very little modularity in code (no/ little hierarchy and code reuse), no asynchronous training support, weak support for TensorBoard logging and so on. All these problems are solved by our project, which is a generic codebase built for reinforcement learning (RL) research in Tensorflow`@schaarschmidt:2017`, with popular RL agents pre-implemented as well as integration with OpenAI Gym`@brockman:2016` environment focusing on quick prototyping and visualization.
 
 Deep Reinforcement Learning 
 Reinforcement learning refers to a paradigm in artificial intelligence where an agent performs a sequence of actions in an environment to maximize rewards`@sutton:1998`. It is in many ways more general and challenging than supervised learning since it requires no labels to train on; instead, the agent interacts continuously with the environment, gathering more and more data and guiding its own learning process.
@@ -56,19 +56,20 @@ We will first introduce the framework for this project, then we will detail alre
 
 The aim of the codebase was to almost have a codebase as simple as the below for loop. 
 
+```python
 for epoch in range(epochs):
-state = env.reset()
-
+    state = env.reset()
 	for step in range(max_episode_steps):
-	last_state = state
-action = agent.act(state)
-state, reward, done = env.step(action)
-	agent.observe(last_state, action, reward, state)
-
-agent.update()
+        last_state = state
+        action = agent.act(state)
+        state, reward, done = env.step(action)
+        agent.observe(last_state, action, reward, state)
+        agent.update()
+```
 
 In order to successfully accomplish this, we chose to modularise the codebase in the hierarchy shown below. 
 
+```
 rl_codebase
 |- train.py
 |---> agents
@@ -85,10 +86,11 @@ rl_codebase
 |   |- registry.py
 |---> envs
 |   |- registry.py
-
+```
 
 This enabled simple and easy to read implementations of each component, such as the Agent, Algo and Environment class is shown below. 
 
+```python
 class Agent:
 	self.model: Model
 	self.algo: Algo
@@ -104,7 +106,7 @@ class Algo(Agent):
 class Environment:
 	def reset() -> state
 	def step(action) -> state, reward, done
-
+```
 
 The project includes agents like Deep Q Network`@mnih:2013`, Noisy DQN`@plappert:2017`, Vanilla Policy Gradient`@sutton:2000`, Deep Deterministic Policy Gradient`@silver2014deterministic` and Proximal Policy Optimization`@schulman2017proximal`. The project also includes simple random sampling and proportional prioritized experience replay approaches, support for Discrete and Box environments, option to render environment replay and record the replay in a video. The project also gives the option to conduct model-free asynchronous training, setting hyperparameters for your algorithm of choice, modularized action and gradient update functions and option to show your training logs in a TensorBoard summary.
 
