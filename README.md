@@ -1,7 +1,7 @@
 ## [FOR.ai](https://for.ai) Reinforcement Learning Codebase
 Modular codebase for reinforcement learning models training, testing and visualization.
 
-**Contributors**: [Bryan M. Li](https://github.com/bryanlimy), [David Tao](https://github.com/taodav), [Alexander Cowen-Rivers](https://github.com/alexanderimanicowenrivers), [Siddhartha Rao Kamalakara](https://github.com/srk97), [Nitarshan Rajkumar](https://github.com/nitarshan), [Sourav Singh](https://github.com/souravsingh), [Aidan N. Gomez](https://github.com/aidangomez), [Piotr Kozakowski](https://github.com/koz4k), [Hariharan Sezhiyan](https://github.com/hsezhiyan)
+**Contributors**: [Bryan M. Li](https://github.com/bryanlimy), [Alexander Cowen-Rivers](https://github.com/alexanderimanicowenrivers), [Piotr Kozakowski](https://github.com/koz4k), [David Tao](https://github.com/taodav), [Siddhartha Rao Kamalakara](https://github.com/srk97), [Nitarshan Rajkumar](https://github.com/nitarshan), [Hariharan Sezhiyan](https://github.com/hsezhiyan), [Sourav Singh](https://github.com/souravsingh), [Aidan N. Gomez](https://github.com/aidangomez)
 
 ### Features
 - Agents: [DQN](rl/agents/algos/dqn.py), [Vanilla Policy Gradient](rl/agents/algos/vanilla_pg.py), [DDPG](rl/agents/algos/ddpg.py), [PPO](rl/agents/algos/ppo.py)
