@@ -1,3 +1,8 @@
+# Reinforcement Learning Codebase [![CodeFactor](https://www.codefactor.io/repository/github/for-ai/rl/badge)](https://www.codefactor.io/repository/github/for-ai/rl) [![Build Status](https://travis-ci.org/for-ai/rl.svg?branch=master)](https://travis-ci.org/for-ai/rl)
+
+Please see the [RL codebase guideline](https://docs.google.com/document/d/1uXipXIiUOM90cO4CJlWyHhPijM-8ZoSP68c59njQrkQ/edit).
+
+
 ## [FOR.ai](https://for.ai) Reinforcement Learning Codebase
 Modular codebase for reinforcement learning models training, testing and visualization.
 
