@@ -127,6 +127,35 @@ Turn rendering on/ off with “--render bool”
 Record the video with “--record_video bool”, which outputs a .mp4 of each recorded episode, soon to automatically generate a GIF. 
 “--num_workers int”, which seamlessly brings our synchronous agent into an asynchronous agent.  
 
+# Full Example
+
+Before you run a full examples, it would be to your benefit to install the following:
+
+* Nvidia CUDA on machines with GPUs to enable faster training. Installation instructions [here](https://developer.nvidia.com/cuda-downloads)
+* Tensorboard for training visualization. Install by running `pip install tensorboard`
+
+This tuturial will make use of a Conda environment as the preferred package manager. Installation instructions can be found [here](https://docs.conda.io/projects/conda/en/latest/user-guide/install/).
+
+After installing Conda, create and activate an environment, and install all dependencies within that environment:
+
+```
+conda create -n rl-codebase python=3.6
+conda activate rl-codebase
+pip install -r requirements.txt
+```
+
+To run locally, we will train DQN on the `Carpole-v1` Gym environment:
+
+```
+# start training
+python train.py --sys local --hparams dqn_cartpole --output_dir /tmp/rl-testing
+# run tensorboard
+tensorboard --logdir /tmp/rl-testing
+# test agent
+python train.py --sys local --hparams dqn_cartpole --output_dir /tmp/rl-testing --training False --render True
+```
+
+
 # Conclusion
 We have outlined the benefits of using a highly modularised reinforcement learning codebase. The next stages of development for the RL codebase are implementing more SOTA model-free RL techniques (GAE, Rainbow, SAC, IMPALA), introducing model-based approaches, such as World Models`@ha:2018`, integrating into an open-sourced experiment managing tool and expanding the codebases compatibility with a broader range of environments, such as Habitat `@savva:2019`. We would also like to see automatic hyperparameter optimization techniques to be integrated, such as Bayesian Optimization method which was crucial to the success of some of DeepMinds most considerable reinforcement learning feats`@chen:2018`.
 
