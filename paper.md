@@ -110,7 +110,7 @@ The project includes agents like Deep Q Network`@mnih:2013`, Noisy DQN`@plappert
 
 In order to run an experiment, we run the below line. 
 
-python train.py --sys ... --hparams ... --output_dir .... 
+`python train.py --sys ... --hparams ... --output_dir .... `
 
 Where “train.py” should never need to be modified for any of the typical single agent environments, this already takes a significant workload from the average reinforcement learning researcher as this deals with logging of reward, checkpointing, loading, rendering environment/ dealing with crashes and saving the experiments hyperparameters. 
 
@@ -139,9 +139,9 @@ This tuturial will make use of a Conda environment as the preferred package mana
 After installing Conda, create and activate an environment, and install all dependencies within that environment:
 
 ```
-conda create -n rl-codebase python=3.6
-conda activate rl-codebase
-pip install -r requirements.txt
+conda create -n rl python=3.6
+conda activate rl
+sh setup.sh
 ```
 
 To run locally, we will train DQN on the `Carpole-v1` Gym environment:
