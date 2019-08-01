@@ -15,3 +15,10 @@ script:
   - python3 train.py --sys local --hparams vpg_cartpole --train_steps 10
   - python3 train.py --sys local --hparams ppo_cartpole --train_steps 10
   - python3 train.py --sys local --hparams ddpg_cartpole --train_steps 10
+  - export PYTHONPATH=${PYTHONPATH}:.  
+  - python3 tests/models/basic_test.py 
+  - python3 tests/models/ddpg_test.py 
+  - python3 tests/models/noisy_network_test.py
+  - python3 tests/models/ppo_test.py
+  - python3 tests/memory/prioritized_test.py
+  - python3 tests/memory/simple_test.py
