@@ -114,6 +114,7 @@ In order to run an experiment, run.
 
 Ideally, “train.py” should never need to be modified for any of the typical single agent environments. It covers the logging of reward, checkpointing, loading, rendering environment/ dealing with crashes and saving the experiments hyperparameters, which takes a significant workload off the average reinforcement learning researcher. 
 
+```
 “--sys”(str) defines the system chosen to run experiment with;  e.g. “local” for running on the local machine. 
 “--env”(str) specifies the environment. 
 “--hparam_override”(str) overrides hyperparameters. 
@@ -125,6 +126,7 @@ Ideally, “train.py” should never need to be modified for any of the typical 
 “--render”(bool) turns rendering on/ off. 
 “--record_video”(bool) records the video with, which outputs a .mp4 of each recorded episode.
 “--num_workers"(int) seamlessly brings our synchronous agent into an asynchronous agent.
+```
 
 # Full Example
 
