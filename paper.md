@@ -48,9 +48,9 @@ Reinforcement learning refers to a paradigm in artificial intelligence where an 
 # Introduction: for-ai/rl 
 Further to the core ideas mentioned in the beginning, a good research codebase should enable good development practices such as continually checkpointing the model's parameters as well as instantly restoring them to the latest checkpoint when available. Moreover, it should be composed of simple, interchangeable building blocks, making it easy to understand and to prototype new research ideas.
 
-We will first introduce the framework for this project, and then we will detail already implemented and significant components. Lastly, we will discuss we can begin training an agent under this framework. 
+We will first introduce the framework for this project, and then we will detail significant components. Lastly, we will discuss how to get started with training an agent under this framework.
 
-The codebase aimed to almost have a training script as simple as the below for loop. 
+This codebase allows training RL agents by a training script as simple as the below for loop.
 
 ```python
 for epoch in range(epochs):
@@ -86,7 +86,7 @@ rl_codebase
 |   |   |   |- registry.py
 ```
 
-Our modularisation enabled simple and easy to read implementations of each component, such as the Agent, Algo and Environment class, as shown below. 
+Our modularisation enables simple and easy-to-read implementation of each component, such as the Agent, Algo and Environment class, as shown below.
 
 ```python
 class Agent:
@@ -106,26 +106,25 @@ class Environment:
 	def step(action) -> state, reward, done
 ```
 
-The project includes agents like Deep Q Network`@mnih:2013`, Noisy DQN`@plappert:2017`, Vanilla Policy Gradient`@sutton:2000`, Deep Deterministic Policy Gradient`@silver2014deterministic` and Proximal Policy Optimization`@schulman2017proximal`. The project also includes simple random sampling and proportional prioritized experience replay approaches, support for Discrete and Box environments, option to render environment replay and record the replay in a video. The project also gives the possibility to conduct model-free asynchronous training, setting hyperparameters for your algorithm of choice, modularized action and gradient update functions and option to show your training logs in a TensorBoard summary.
+The codebase includes agents like Deep Q Network`@mnih:2013`, Noisy DQN`@plappert:2017`, Vanilla Policy Gradient`@sutton:2000`, Deep Deterministic Policy Gradient`@silver2014deterministic` and Proximal Policy Optimization`@schulman2017proximal`. The project also includes simple random sampling and proportional prioritized experience replay approaches, support for Discrete and Box environments, option to render environment replay and record the replay in a video. The project also gives the possibility to conduct model-free asynchronous training, setting hyperparameters for your algorithm of choice, modularized action and gradient update functions and option to show your training logs in a TensorBoard summary.
 
-In order to run an experiment, we run the below line. 
+In order to run an experiment, run. 
 
 `python train.py --sys ... --hparams ... --output_dir .... `
 
-Where “train.py” should never need to be modified for any of the typical single agent environments, this already takes a significant workload from the average reinforcement learning researcher as this deals with logging of reward, checkpointing, loading, rendering environment/ dealing with crashes and saving the experiments hyperparameters. 
+Ideally, “train.py” should never need to be modified for any of the typical single agent environments. It covers the logging of reward, checkpointing, loading, rendering environment/ dealing with crashes and saving the experiments hyperparameters, which takes a significant workload off the average reinforcement learning researcher. 
 
-We define the system we choose to run this on with;
-“--sys str” e.g. “local” for running on the local machine. 
-Choose the environment with “--env str”
-Override hyperparameters with “--hparam_override str”
-Set training length “--train_steps int”
-Test episodes “--test_episodes int”
-Validation episodes “--eval_episodes int”
-Freeze model weights “--training bool”
-Performing multiple versions of training/ testing with “--copies int”
-Turn rendering on/ off with “--render bool”
-Record the video with “--record_video bool”, which outputs a .mp4 of each recorded episode, soon to automatically generate a GIF. 
-“--num_workers int”, which seamlessly brings our synchronous agent into an asynchronous agent.  
+“--sys”(str) defines the system chosen to run experiment with;  e.g. “local” for running on the local machine. 
+“--env”(str) specifies the environment. 
+“--hparam_override”(str) overrides hyperparameters. 
+“--train_steps”(int) sets training length. 
+“--test_episodes”(int) tests episodes.
+“--eval_episodes”(int) sets Validation episodes.
+“--training"(bool) freeze model weights is set to False. 
+“--copies”(int) set the number of times to perform multiple versions of training/ testing.
+“--render”(bool) turns rendering on/ off. 
+“--record_video”(bool) records the video with, which outputs a .mp4 of each recorded episode.
+“--num_workers"(int) seamlessly brings our synchronous agent into an asynchronous agent.
 
 # Full Example
 
