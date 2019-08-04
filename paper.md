@@ -19,7 +19,7 @@ authors:
     affiliation: 1
   - name: Hariharan Sezhiyan
     affiliation: 1
-  - name: Sourav Singh
+  - name: Sheldon Huang
     affiliation: 1
   - name: Aidan N. Gomez
     affiliation: 1  
