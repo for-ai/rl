@@ -1,7 +1,7 @@
 ## [FOR.ai](https://for.ai) Reinforcement Learning Codebase [![Build Status](https://travis-ci.org/for-ai/rl.svg?branch=master)](https://travis-ci.org/for-ai/rl)
 Modular codebase for reinforcement learning models training, testing and visualization.
 
-**Contributors**: [Bryan M. Li](https://github.com/bryanlimy), [Alexander Cowen-Rivers](https://github.com/alexanderimanicowenrivers), [Piotr Kozakowski](https://github.com/koz4k), [David Tao](https://github.com/taodav), [Siddhartha Rao Kamalakara](https://github.com/srk97), [Nitarshan Rajkumar](https://github.com/nitarshan), [Hariharan Sezhiyan](https://github.com/hsezhiyan), [Sheldon Huang](https://www.cs.toronto.edu/~huang/), [Aidan N. Gomez](https://github.com/aidangomez)
+**Contributors**: [Bryan M. Li](https://github.com/bryanlimy), [Alexander Cowen-Rivers](https://github.com/alexanderimanicowenrivers), [Piotr Kozakowski](https://github.com/koz4k), [David Tao](https://github.com/taodav), [Siddhartha Rao Kamalakara](https://github.com/srk97), [Nitarshan Rajkumar](https://github.com/nitarshan), [Hariharan Sezhiyan](https://github.com/hsezhiyan), [Sicong Huang](https://www.cs.toronto.edu/~huang/), [Aidan N. Gomez](https://github.com/aidangomez)
 
 ### Features
 - Agents: [DQN](rl/agents/algos/dqn.py), [Vanilla Policy Gradient](rl/agents/algos/vanilla_pg.py), [DDPG](rl/agents/algos/ddpg.py), [PPO](rl/agents/algos/ppo.py)
