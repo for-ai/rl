@@ -21,9 +21,9 @@ Modular codebase for reinforcement learning models training, testing and visuali
 
 Example for recorded envrionment on various RL agents.
 
-| MountainCar-v0 |  Pendulum-v0 | VideoPinball-v0 | Tennis-v0 |
-|---|---|---|---|
-![MountainCar-v0](gif/mountaincar.gif)|![Pendulum-v0](gif/pendulum.gif)|![VideoPinball-v0](gif/pinball.gif)|![Tennis-v0](gif/tennis.gif)
+| MountainCar-v0                         | Pendulum-v0                      | VideoPinball-v0                     | Tennis-v0                    |
+| -------------------------------------- | -------------------------------- | ----------------------------------- | ---------------------------- |
+| ![MountainCar-v0](gif/mountaincar.gif) | ![Pendulum-v0](gif/pendulum.gif) | ![VideoPinball-v0](gif/pinball.gif) | ![Tennis-v0](gif/tennis.gif) |
 
 ### Requirements
 It is recommended to install the codebase in a virtual environment ([virtualenv](https://pypi.org/project/virtualenv/) or [conda](https://conda.io/en/latest/)). 
@@ -68,6 +68,9 @@ Check [init_flags()](https://github.com/for-ai/rl/blob/master/train.py#L17), [de
 - `render`: Render game play.
 - `record_video`: Record game play.
 - `num_workers`, number of workers.
+
+### Documentation
+More detailed documentation can be found [here](https://rl-codebase.readthedocs.io/en/latest/).
 
 ### Contributing
 We'd love to accept your contributions to this project. Please feel free to open an issue, or submit a pull request as necessary. Contact us [team@for.ai](mailto:team@for.ai) for potential collaborations and joining [FOR.ai](https://for.ai).
