@@ -36,7 +36,8 @@ output:
 # Abstract 
 
 Vast reinforcement learning (RL) research groups, such as DeepMind and OpenAI, have their internal (private) reinforcement learning codebases, which enable quick prototyping and comparing of ideas to many SOTA methods. We argue the five fundamental properties of a sophisticated research codebase are; modularity, reproducibility, many RL algorithms pre-implemented, speed and ease of running on different hardware/ integration with visualization packages. 
-Currently, there does not exist any RL codebase, to the author's knowledge, which contains all the five properties, particularly with TensorBoard logging and abstracting away cloud hardware such as TPU's from the user. The codebase aims to help distil the best research practices into the community as well as ease the entry access and accelerate the pace of the field. 
+Currently, there does not exist any RL codebase, to the author's knowledge, which contains all the five properties, particularly with TensorBoard logging and abstracting away cloud hardware such as TPU's from the user. The codebase aims to help distil the best research practices into the community as well as ease the entry access and accelerate the pace of the field. More detailed documentation can be found [here](https://rl-codebase.readthedocs.io/en/latest/).
+
 
 # Related Work
 
@@ -108,7 +109,7 @@ class Environment:
 
 The codebase includes agents like Deep Q Network`@mnih:2013`, Noisy DQN`@plappert:2017`, Vanilla Policy Gradient`@sutton:2000`, Deep Deterministic Policy Gradient`@silver2014deterministic` and Proximal Policy Optimization`@schulman2017proximal`. The project also includes simple random sampling and proportional prioritized experience replay approaches, support for Discrete and Box environments, option to render environment replay and record the replay in a video. The project also gives the possibility to conduct model-free asynchronous training, setting hyperparameters for your algorithm of choice, modularized action and gradient update functions and option to show your training logs in a TensorBoard summary.
 
-In order to run an experiment, run. 
+In order to run an experiment, run: 
 
 `python train.py --sys ... --hparams ... --output_dir .... `
 
