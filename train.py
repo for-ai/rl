@@ -4,6 +4,7 @@ import threading
 import numpy as np
 import tensorflow as tf
 import tensorflow.keras.backend as K
+tf.logging.set_verbosity(tf.logging.ERROR)
 
 from rl.utils import flags
 from rl.utils.utils import ModeKeys
