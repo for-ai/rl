@@ -46,8 +46,10 @@ install_system_packages() {
         echo 'brew install qt open-mpi pkg-config ffmpeg'
         brew install qt open-mpi pkg-config ffmpeg
       elif [ $mac_package_manager = "macports" ]; then
+        echo 'port selfupdate'
+        port selfupdate
         echo 'port install qt open-mpi pkg-config ffmpeg'
-        port install qt openmpi pkgconfig ffmpeg
+        port install qt4-mac openmpi pkgconfig ffmpeg
       fi
       ;;
     Linux)
