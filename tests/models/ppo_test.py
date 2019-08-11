@@ -3,6 +3,7 @@ from rl.hparams.utils import HParams
 
 import numpy as np
 import tensorflow as tf
+tf.logging.set_verbosity(tf.logging.ERROR)
 
 inp_dim = 80
 
