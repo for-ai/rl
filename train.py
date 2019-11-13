@@ -4,7 +4,8 @@ import threading
 import numpy as np
 import tensorflow as tf
 import tensorflow.keras.backend as K
-tf.logging.set_verbosity(tf.logging.ERROR)
+
+tf.compat.v1.logging.set_verbosity(tf.compat.v1.logging.ERROR)
 
 from rl.utils import flags
 from rl.utils.utils import ModeKeys
@@ -103,8 +104,8 @@ def train(worker_id, agent, hparams, checkpoint):
 
     last_state = state
 
-    action, reward, done, state = step(
-        hparams, agent, last_state, env, worker_id)
+    action, reward, done, state = step(hparams, agent, last_state, env,
+                                       worker_id)
 
     agent.observe(last_state, action, reward, done, state, worker_id)
 

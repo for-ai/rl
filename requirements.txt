@@ -1,4 +1,4 @@
-tensorflow>=1.12
+tensorflow==1.15.0
 requests>=2.19.1
 roboschool
 git+https://github.com/tensorflow/cleverhans.git@de5db266fdf47830f46c80cca53fd84fbbb542bf#egg=cleverhans
