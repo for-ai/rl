@@ -17,22 +17,9 @@ def log_hparams(hparams):
     file.write("{}\n".format(str(vars(hparams))))
 
 
-def validate_flags(FLAGS):
-  messages = []
-  if not FLAGS.sys:
-    messages.append("Missing required flag --sys")
-  if not FLAGS.hparams:
-    messages.append("Missing required flag --hparams")
-
-  if len(messages) > 0:
-    raise Exception("\n".join(messages))
-
-  return FLAGS
-
-
 def update_hparams(FLAGS, hparams):
   # set hparams from FLAGS attribtues
-  for attr in dir(FLAGS):
+  for attr in vars(FLAGS):
     if attr not in [
         'hparams', 'hparams_override', 'h', 'help', 'helpshort', 'env'
     ]:
