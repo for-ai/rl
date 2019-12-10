@@ -4,7 +4,6 @@ from rl.hparams.utils import HParams
 import numpy as np
 import random
 import tensorflow as tf
-tf.logging.set_verbosity(tf.logging.ERROR)
 
 
 class SimpleMemoryTest(tf.test.TestCase):
