@@ -158,8 +158,7 @@ python train.py --sys local --hparams dqn_cartpole --output_dir /tmp/rl-testing
 # run tensorboard
 tensorboard --logdir /tmp/rl-testing
 # test agent
-python train.py --sys local --hparams dqn_cartpole --output_dir /tmp/rl-testing 
-  --training False --render True
+python train.py --sys local --hparams dqn_cartpole --output_dir /tmp/rl-testing --test_only --render
 ```
 
 
