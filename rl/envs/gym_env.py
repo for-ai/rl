@@ -22,7 +22,7 @@ class GymEnv(Environment):
 
     if hparams.record_video:
       directory = hparams.run_output_dir
-      if not hparams.training:
+      if hparams.test_only:
         directory = os.path.join(directory, 'eval')
       # save game play video every hparams.save_every
       self._env = wrappers.Monitor(
@@ -30,7 +30,7 @@ class GymEnv(Environment):
           directory=os.path.join(directory, 'video'),
           video_callable=lambda count: count % hparams.save_every == 0,
           force=True,
-          mode='training' if hparams.training else 'evaluation')
+          mode='evaluation' if hparams.test_only else 'training')
 
     self.seed(self._hparams.seed)
     self._observation_space = self._env.observation_space
