@@ -54,7 +54,8 @@ install_system_packages() {
       ;;
     Linux)
       echo 'apt install mpich build-essential qt5-default pkg-config libtcmalloc-minimal4 ffmpeg'
-      sudo apt install mpich build-essential qt5-default pkg-config libtcmalloc-minimal4 ffmpeg
+      sudo apt update
+      sudo apt install mpich build-essential qt5-default pkg-config libtcmalloc-minimal4 ffmpeg -y
       ;;
     *)
       echo 'Only Linux and macOS systems are currently supported.'
@@ -66,26 +67,26 @@ install_system_packages() {
 install_tensorflow() {
   if [ "$use_gpu" = "true" ]; then
     echo '\nInstall tensorflow-gpu'
-    python3 -m pip install tensorflow-gpu==1.15.0
+    python3 -m pip install tensorflow-gpu
   else
     echo '\nInstall tensorflow'
-    python3 -m pip install tensorflow==1.15.0
+    python3 -m pip install tensorflow
   fi
-}
-
-install_coinrun() {
-  echo '\nInstall OpenAI CoinRun';
-  cd "$(dirname "$0")"
-  git clone https://github.com/openai/coinrun.git coinrun
-  cd coinrun
-  python3 -m pip install -r requirements.txt
-  python3 -m pip install -e .
 }
 
 install_python_packages() {
   echo '\nInstall Python packages'
   cd "$(dirname "$0")"
   python3 -m pip install -r requirements.txt
+}
+
+install_coinrun() {
+  echo '\nInstall OpenAI CoinRun'
+  cd "$(dirname "$0")"
+  git clone https://github.com/openai/coinrun.git coinrun
+  cd coinrun
+  python3 -m pip install -r requirements.txt
+  python3 -m pip install -e .
 }
 
 # Read flags and arguments
@@ -103,7 +104,7 @@ while [ ! $# -eq 0 ]; do
       mac_package_manager=$1
       ;;
     *)
-      echo "Unkown flag $1, please check available flags with --help"
+      echo "Unknown flag $1, please check available flags with --help"
       exit 1
       ;;
   esac
@@ -113,7 +114,7 @@ done
 check_requirements
 install_system_packages
 install_tensorflow
-install_coinrun
 install_python_packages
+install_coinrun
 
 echo '\nSetup completed.'
