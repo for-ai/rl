@@ -2,10 +2,9 @@ import os
 import random
 import threading
 import numpy as np
+import argparse
 import tensorflow as tf
 import tensorflow.keras.backend as K
-
-tf.compat.v1.logging.set_verbosity(tf.compat.v1.logging.ERROR)
 
 from rl.utils import flags
 from rl.utils.utils import ModeKeys
@@ -18,24 +17,50 @@ from rl.agents.registry import get_agent
 
 
 def init_flags():
-  tf.flags.DEFINE_string("hparams", None, "Which hparams to use.")
-  tf.flags.DEFINE_string("sys", None, "Which system environment to use.")
-  tf.flags.DEFINE_string("env", None, "Which RL environment to use.")
-  tf.flags.DEFINE_string("hparam_override", "",
-                         "Run-specific hparam settings to use.")
-  tf.flags.DEFINE_string("output_dir", None, "The output directory.")
-  tf.flags.DEFINE_integer("train_steps", 2000000,
-                          "Number of steps to train the agent")
-  tf.flags.DEFINE_integer("eval_episodes", 10,
-                          "Number of episodes to evaluate the agent")
-  tf.flags.DEFINE_integer('test_episodes', 10,
-                          "Number of episodes to test the agent")
-  tf.flags.DEFINE_boolean("training", True, "training or testing")
-  tf.flags.DEFINE_integer("copies", 1,
-                          "Number of independent training/testing runs to do.")
-  tf.flags.DEFINE_boolean("render", False, "Render game play")
-  tf.flags.DEFINE_boolean("record_video", False, "Record game play")
-  tf.flags.DEFINE_integer("num_workers", 1, "number of workers")
+  parser = argparse.ArgumentParser()
+  parser.add_argument(
+      "--hparams", required=True, type=str, help="Which hparams to use.")
+  parser.add_argument(
+      "--sys",
+      required=True,
+      type=str,
+      choices=['local', 'gcp', 'tpu'],
+      help="Which system environment to use.")
+  parser.add_argument("--env", default="", help="Which RL environment to use.")
+  parser.add_argument(
+      "--hparam_override",
+      default="",
+      type=str,
+      help="Run-specific hparam settings to use.")
+  parser.add_argument(
+      "--output_dir", required=True, type=str, help="The output directory.")
+  parser.add_argument(
+      "--train_steps",
+      default=2000000,
+      type=int,
+      help="Number of steps to train the agent.")
+  parser.add_argument(
+      "--eval_episodes",
+      default=10,
+      type=int,
+      help="Number of episodes to evaluate the agent.")
+  parser.add_argument(
+      "--test_episodes",
+      default=10,
+      type=int,
+      help="Number of episodes to test the agent.")
+  parser.add_argument(
+      "--test_only", action="store_true", help="Test agent without training.")
+  parser.add_argument(
+      "--copies", default=1, type=int, help="Which hparams to use.")
+  parser.add_argument("--render", action="store_true", help="Render game play.")
+  parser.add_argument(
+      "--record_video", action="store_true", help="Record game play.")
+  parser.add_argument(
+      "--num_workers", default=1, type=int, help="Number of workers.")
+
+  FLAGS = parser.parse_args()
+  return FLAGS
 
 
 def init_random_seeds(hparams):
@@ -45,8 +70,6 @@ def init_random_seeds(hparams):
 
 
 def init_hparams(FLAGS):
-  flags.validate_flags(FLAGS)
-
   tf.reset_default_graph()
 
   hparams = get_hparams(FLAGS.hparams)
@@ -66,16 +89,16 @@ def init_agent(sess, hparams):
 
 
 def log_start_of_run(FLAGS, hparams, run):
-  tf.logging.warn("\n-----------------------------------------\n"
-                  "BEGINNING RUN #%s:\n"
-                  "\t hparams: %s\n"
-                  "\t env: %s\n"
-                  "\t agent: %s\n"
-                  "\t num_workers: %d\n"
-                  "\t output_dir: %s\n"
-                  "-----------------------------------------\n" %
-                  (run, FLAGS.hparams, hparams.env, hparams.agent,
-                   hparams.num_workers, hparams.output_dir))
+  print("\n-----------------------------------------\n"
+        "BEGINNING RUN #%s:\n"
+        "\t hparams: %s\n"
+        "\t env: %s\n"
+        "\t agent: %s\n"
+        "\t num_workers: %d\n"
+        "\t output_dir: %s\n"
+        "-----------------------------------------\n" %
+        (run, FLAGS.hparams, hparams.env, hparams.agent, hparams.num_workers,
+         hparams.output_dir))
 
   hparams.run_output_dir = os.path.join(hparams.output_dir, 'run_%d' % run)
   init_logger(hparams)
@@ -97,6 +120,7 @@ def step(hparams, agent, state, env, worker_id):
 
 def train(worker_id, agent, hparams, checkpoint):
   env = get_env(hparams)
+  eval_env = get_env(hparams)
 
   state = env.reset()
   while hparams.global_step < hparams.train_steps:
@@ -121,13 +145,13 @@ def train(worker_id, agent, hparams, checkpoint):
 
     if hparams.local_step[worker_id] % hparams.eval_interval == 0:
       agent.reset(worker_id)
-      evaluate(worker_id, agent, env, hparams)
+      evaluate(worker_id, agent, eval_env, hparams)
       if worker_id == 0:
         checkpoint.save()
-      state = env.reset()
       agent.reset(worker_id)
 
   env.close()
+  eval_env.close()
 
 
 def evaluate(worker_id, agent, env, hparams):
@@ -183,7 +207,7 @@ def _run(FLAGS):
       if not restored:
         sess.run(tf.global_variables_initializer())
 
-      if hparams.training:
+      if not hparams.test_only:
         log_graph()
 
         agent.clone_weights()
@@ -208,11 +232,10 @@ def _run(FLAGS):
     hparams = init_hparams(FLAGS)
 
 
-def main(_):
-  FLAGS = tf.app.flags.FLAGS
+def main():
+  FLAGS = init_flags()
   _run(FLAGS)
 
 
 if __name__ == "__main__":
-  init_flags()
-  tf.app.run()
+  main()
