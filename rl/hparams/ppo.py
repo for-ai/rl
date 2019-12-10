@@ -46,5 +46,9 @@ def ppo_mountaincar():
 @register
 def ppo_pong():
   hps = ppo()
-  hps.env = "Pong-v0"
+  hps.env = "PongBaselines-v4"
+  hps.num_epochs = 4
+  hps.batch_size = 128
+  hps.clipping_coef = 0.1
+  hps.gamma = 0.99
   return hps

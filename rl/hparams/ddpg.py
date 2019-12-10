@@ -31,7 +31,15 @@ def ddpg():
 @register
 def ddpg_cartpole():
   hps = ddpg()
+  hps.action_function = "uniform_random_action"
   hps.env = "CartPole-v1"
+  hps.hidden_size = 200
+  hps.memory = "prioritized"
+  hps.memory_size = 50000
+  # prioritized experience replay
+  hps.memory_update_priorities = True
+  hps.memory_priority_control = 0.6
+  hps.memory_priority_compensation = 0.4
   return hps
 
 
@@ -52,6 +60,13 @@ def ddpg_pendulum():
 def ddpg_mountaincar():
   hps = ddpg()
   hps.env = "MountainCar-v0"
+  hps.action_function = "uniform_random_action"
+  hps.memory = "prioritized"
+  hps.memory_size = 50000
+  # prioritized experience replay
+  hps.memory_update_priorities = True
+  hps.memory_priority_control = 0.6
+  hps.memory_priority_compensation = 0.4
   hps.reward_augmentation = "mountain_car_default"
   return hps
 
@@ -66,6 +81,7 @@ def ddpg_mountaincar_continuous():
 @register
 def ddpg_pong():
   hps = ddpg()
+  hps.action_function = "uniform_random_action"
   hps.env = "Pong-v0"
   return hps
 
@@ -85,5 +101,6 @@ def ddpg_carracing():
 @register
 def ddpg_coinrun():
   hps = ddpg()
+  hps.action_function = "uniform_random_action"
   hps.env = 'CoinRun'
   return hps
