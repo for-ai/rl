@@ -21,8 +21,7 @@ class PPO(Agent):
     self.target_actor = get_model(
         hparams, register="PPOActor", name="target_actor")
     self.advantage_estimator = get_advantage_estimator(
-        self._hparams.advantage_estimator
-    )
+        self._hparams.advantage_estimator)
 
     self.build()
 
@@ -113,7 +112,7 @@ class PPO(Agent):
     self._build_target_update_op()
 
   def update(self, worker_id=0):
-    if not self._hparams.training:
+    if self._hparams.test_only:
       return
 
     memory = self._memory[worker_id]
@@ -142,8 +141,8 @@ class PPO(Agent):
 
         self._sess.run(self.state_processor_train_op, feed_dict=feed_dict)
 
-        actor_loss, _ = self._sess.run(
-            [self.actor_loss, self.actor_train_op], feed_dict=feed_dict)
+        actor_loss, _ = self._sess.run([self.actor_loss, self.actor_train_op],
+                                       feed_dict=feed_dict)
         log_scalar("loss/actor/worker_%d" % worker_id, actor_loss)
 
         critic_loss, _ = self._sess.run(
