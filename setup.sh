@@ -67,10 +67,10 @@ install_system_packages() {
 install_tensorflow() {
   if [ "$use_gpu" = "true" ]; then
     echo '\nInstall tensorflow-gpu'
-    python3 -m pip install tensorflow-gpu
+    python3 -m pip install tensorflow-gpu==1.15.0
   else
     echo '\nInstall tensorflow'
-    python3 -m pip install tensorflow
+    python3 -m pip install tensorflow==1.15.0
   fi
 }
 
