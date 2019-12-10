@@ -46,7 +46,8 @@ class SimpleMemory(Memory):
     random.shuffle(indices)
     for start in range(0, self.size(), batch_size):
       samples = [
-          self._memory[index] for index in indices[start:(start + batch_size)]]
+          self._memory[index] for index in indices[start:(start + batch_size)]
+      ]
       yield self._make_batch(samples)
 
   @staticmethod
