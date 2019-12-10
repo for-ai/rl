@@ -51,11 +51,11 @@ python train.py --sys ... --hparams ... --output_dir ...
 # run tensorboard
 tensorboard --logdir ...
 # test agnet
-python train.py --sys ... --hparams ... --output_dir ... --training False --render True
+python train.py --sys ... --hparams ... --output_dir ... --test_only --render
 ```
 
 ### Hyper-parameters
-Check [init_flags()](https://github.com/for-ai/rl/blob/master/train.py#L17), [defaults.py](rl/hparams/defaults.py) for default hyper-parameters, and check [hparams/dqn.py](rl/hparams/dqn.py) agent specific hyper-parameters examples.
+Check available flags with `--help`, [defaults.py](rl/hparams/defaults.py) for default hyper-parameters, and check [hparams/dqn.py](rl/hparams/dqn.py) agent specific hyper-parameters examples.
 - `hparams`: Which hparams to use, defined under [rl/hparams](rl/hparams)
 - `sys`: Which system environment to use.
 - `env`: Which RL environment to use.
@@ -63,7 +63,7 @@ Check [init_flags()](https://github.com/for-ai/rl/blob/master/train.py#L17), [de
 - `train_steps`:, Number of steps to train the agent.
 - `test_episodes`: Number of episodes to test the agent.
 - `eval_episodes`: Number of episodes to evaluate the agent.
-- `training`: train or test agent.
+- `test_only`: Test agent without training.
 - `copies`: Number of independent training/testing runs to do.
 - `render`: Render game play.
 - `record_video`: Record game play.
