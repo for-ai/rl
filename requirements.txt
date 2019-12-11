@@ -1,4 +1,3 @@
-tensorflow==1.15.0
 dl-cloud
 requests>=2.19.1
 roboschool
