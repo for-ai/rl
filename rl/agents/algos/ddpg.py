@@ -60,17 +60,18 @@ class DDPG(Agent):
         self.action_pred, feed_dict={self.last_states: state})
 
     if self._hparams.mode[worker_id] == ModeKeys.TRAIN:
-      action = action + self.actor_noise()
+      if self._hparams.action_space_type == "Discrete":
+        action = self._action_function(self._hparams, action, worker_id)
+      else:
+        action = action + self.actor_noise()
 
-    if self._hparams.num_actions == 1:
+    if self._hparams.num_actions == 1 and self._hparams.action_space_type != "Discrete":
       # Box enviroments with one action, e.g. pendulum.
       action = np.squeeze(action, axis=-1)
-    elif self._hparams.action_space_type == "Discrete":
+    if self._hparams.mode[
+        worker_id] != ModeKeys.TRAIN and self._hparams.action_space_type == "Discrete":
       action = np.argmax(action)
-    else:
-      # Box enviroments with mutli-actions, e.g. carracing.
-      action = np.squeeze(action)
-    return action
+    return np.squeeze(action)
 
   def clone_weights(self):
     self.target_actor.set_weights(self.actor.get_weights())
@@ -119,14 +120,10 @@ class DDPG(Agent):
     else:
       self.cnn_vars = None
 
-    self.actor_pred = self.actor(last_states)
-
-    self.action_pred = self.actor_pred
-    if self._hparams.action_space_type == "Discrete":
-      self.action_pred = tf.nn.softmax(self.actor_pred, axis=-1)
+    self.action_pred = self.actor(last_states)
 
     with tf.variable_scope("actor_loss"):
-      critic_pred_from_actor = self.critic(last_states, self.actor_pred)
+      critic_pred_from_actor = self.critic(last_states, self.action_pred)
 
       # maximize q
       self.actor_loss = -tf.reduce_mean(critic_pred_from_actor)
@@ -157,9 +154,11 @@ class DDPG(Agent):
     self._build_target_update_op()
 
   def update(self, worker_id=0):
+    if self._hparams.test_only:
+      return
     memory = self._memory[worker_id]
 
-    if self._hparams.training and memory.size() >= self._hparams.batch_size:
+    if memory.size() >= self._hparams.batch_size:
       batch = memory.sample(self._hparams.batch_size)
 
       critic_loss, _, _ = self._sess.run(
@@ -168,13 +167,16 @@ class DDPG(Agent):
               self.state_processor_train_op
           ],
           feed_dict={
-              self.last_states: batch.last_state,
-              self.actions: np.reshape(batch.action,
-                                       (-1, self._hparams.num_actions)),
-              self.done: np.expand_dims(batch.done.astype(float), axis=-1),
-              self.rewards: np.expand_dims(
-                  batch.reward.astype(float), axis=-1),
-              self.states: batch.state
+              self.last_states:
+              batch.last_state,
+              self.actions:
+              np.reshape(batch.action, (-1, self._hparams.num_actions)),
+              self.done:
+              np.expand_dims(batch.done.astype(float), axis=-1),
+              self.rewards:
+              np.expand_dims(batch.reward.astype(float), axis=-1),
+              self.states:
+              batch.state
           })
 
       actor_loss, _ = self._sess.run(

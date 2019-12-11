@@ -6,7 +6,7 @@ Generic Reinforcment Learning Codebase
 Contents:
 
 .. toctree::
-   :maxdepth: 4
+   :maxdepth: 2
    :glob:
 
    *

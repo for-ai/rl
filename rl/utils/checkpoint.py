@@ -27,7 +27,7 @@ class Checkpoint():
     self._last_record_step = -1
 
   def save(self):
-    if not self._hparams.training:
+    if self._hparams.test_only:
       return
 
     save_path = os.path.join(self._run_dir,
@@ -60,7 +60,7 @@ class Checkpoint():
     latest_checkpoint = tf.train.latest_checkpoint(self._run_dir)
 
     if latest_checkpoint is None:
-      if not self._hparams.training:
+      if self._hparams.test_only:
         raise FileNotFoundError("no checkpoint found in %s" % self._run_dir)
       return False
 
@@ -76,7 +76,7 @@ class Checkpoint():
       if previous_hparams.agent != self._hparams.agent:
         print("incompatible agent from checkpoint %s" % latest_checkpoint)
         exit()
-      if (self._hparams.training and
+      if (not self._hparams.test_only and
           previous_hparams.num_workers != self._hparams.num_workers):
         print("number of workers in checkpoint %s is not equal" %
               latest_checkpoint)

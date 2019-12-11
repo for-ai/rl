@@ -14,8 +14,7 @@ class VanillaPG(Agent):
 
   def __init__(self, sess, hparams):
     assert hparams.memory == "simple", (
-        "VanillaPG only works with simple memory."
-    )
+        "VanillaPG only works with simple memory.")
     super().__init__(sess, hparams)
     self.model = get_model(hparams, register="basic", name="model")
     self.build()
@@ -78,15 +77,14 @@ class VanillaPG(Agent):
         self.logits, self.actions, self.discounted_rewards, self._hparams)
 
   def update(self, worker_id=0):
-    if not self._hparams.training:
+    if self._hparams.test_only:
       return
 
     memory = self._memory[worker_id]
     rewards = memory.get_sequence("reward")
     dones = memory.get_sequence("done")
-    discounted_rewards = compute_discounted_rewards(
-        rewards, dones, self._hparams.gamma
-    )
+    discounted_rewards = compute_discounted_rewards(rewards, dones,
+                                                    self._hparams.gamma)
     if self._hparams.normalize_reward:
       discounted_rewards = normalize(discounted_rewards)
     memory.set_sequence("discounted_reward", discounted_rewards)
@@ -98,8 +96,7 @@ class VanillaPG(Agent):
               self.last_states: batch.last_state,
               self.actions: batch.action,
               self.discounted_rewards: batch.discounted_reward,
-          }
-      )
+          })
       log_scalar("loss/worker_%d" % worker_id, loss)
 
     memory.clear()

@@ -122,9 +122,12 @@ class DQN(Agent):
     self._build_target_update_op()
 
   def update(self, worker_id=0):
+    if self._hparams.test_only:
+      return
+
     memory = self._memory[worker_id]
 
-    if self._hparams.training and memory.size() > self._hparams.batch_size:
+    if memory.size() > self._hparams.batch_size:
       batch = memory.sample(self._hparams.batch_size)
 
       loss, _, td_errors, _ = self._sess.run(

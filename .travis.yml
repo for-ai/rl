@@ -11,14 +11,19 @@ install:
 # command to run tests
 script:
   - cd ~/$TRAVIS_REPO_SLUG/;
-  - python3 train.py --sys local --hparams dqn_cartpole --train_steps 10
-  - python3 train.py --sys local --hparams vpg_cartpole --train_steps 10
-  - python3 train.py --sys local --hparams ppo_cartpole --train_steps 10
-  - python3 train.py --sys local --hparams ddpg_cartpole --train_steps 10
+  - python3 train.py --sys local --hparams dqn_cartpole --output_dir dqn_cartpole --train_steps 200;
+  - python3 train.py --sys local --hparams vpg_cartpole --output_dir vpg_cartpole --train_steps 200;
+  - python3 train.py --sys local --hparams ppo_cartpole --output_dir ppo_cartpole --train_steps 200;
+  - python3 train.py --sys local --hparams ddpg_cartpole --output_dir ddpg_cartpole --train_steps 200;
+  - python3 train.py --sys local --hparams dqn_cartpole --output_dir dqn_cartpole_4workers --train_steps 200 --num_workers 4;
+  - python3 train.py --sys local --hparams ppo_cartpole --output_dir ppo_cartpole_4workers --train_steps 200 --num_workers 4;
+  - python3 train.py --sys local --hparams ddpg_cartpole --output_dir ddpg_cartpole_4workers --train_steps 200 --num_workers 4;
+  - python3 train.py --sys local --hparams ddpg_coinrun --output_dir ddpg_coinrun --train_steps 200;
+  - python3 train.py --sys local --hparams ppo_pong --output_dir ppo_pong --train_steps 200;
   - export PYTHONPATH=${PYTHONPATH}:.  
-  - python3 tests/models/basic_test.py 
-  - python3 tests/models/ddpg_test.py 
-  - python3 tests/models/noisy_network_test.py
-  - python3 tests/models/ppo_test.py
-  - python3 tests/memory/prioritized_test.py
-  - python3 tests/memory/simple_test.py
+  - python3 tests/models/basic_test.py;
+  - python3 tests/models/ddpg_test.py;
+  - python3 tests/models/noisy_network_test.py;
+  - python3 tests/models/ppo_test.py;
+  - python3 tests/memory/prioritized_test.py;
+  - python3 tests/memory/simple_test.py;

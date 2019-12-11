@@ -43,7 +43,7 @@ class DDPGActor(Model):
     elif hparams.action_space_type == "Discrete":
       self.layer3 = tf.layers.Dense(
           units=hparams.num_actions,
-          activation=tf.nn.tanh,
+          activation=tf.nn.softmax,
           kernel_initializer=kernel_initializer)
     else:
       NotImplementedError(
