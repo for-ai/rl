@@ -38,6 +38,32 @@ check_requirements() {
   esac
 }
 
+install_system_packages() {
+  echo 'Install required system packages'
+  case "$(uname -s)" in
+    Darwin)
+      if [ $mac_package_manager = "homebrew" ]; then
+        echo 'brew install qt open-mpi pkg-config ffmpeg'
+        brew install qt open-mpi pkg-config ffmpeg
+      elif [ $mac_package_manager = "macports" ]; then
+        echo 'port selfupdate'
+        port selfupdate
+        echo 'port install qt open-mpi pkg-config ffmpeg'
+        port install qt4-mac openmpi pkgconfig ffmpeg
+      fi
+      ;;
+    Linux)
+      echo 'apt install mpich build-essential qt5-default pkg-config libtcmalloc-minimal4 ffmpeg'
+      sudo apt update
+      sudo apt install mpich build-essential qt5-default pkg-config libtcmalloc-minimal4 ffmpeg -y
+      ;;
+    *)
+      echo 'Only Linux and macOS systems are currently supported.'
+      exit 1
+      ;;
+  esac
+}
+
 install_tensorflow() {
   if [ "$use_gpu" = "true" ]; then
     echo '\nInstall tensorflow-gpu'
@@ -54,6 +80,14 @@ install_python_packages() {
   python3 -m pip install -r requirements.txt
 }
 
+install_coinrun() {
+  echo '\nInstall OpenAI CoinRun'
+  cd "$(dirname "$0")"
+  git clone https://github.com/openai/coinrun.git coinrun
+  cd coinrun
+  python3 -m pip install -r requirements.txt
+  python3 -m pip install -e .
+}
 
 # Read flags and arguments
 while [ ! $# -eq 0 ]; do
@@ -78,7 +112,9 @@ while [ ! $# -eq 0 ]; do
 done
 
 check_requirements
+install_system_packages
 install_tensorflow
 install_python_packages
+install_coinrun
 
 echo '\nSetup completed.'
