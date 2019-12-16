@@ -279,3 +279,4 @@ def register_atari():
             ))
   except ImportError:
     print('ImportError: Unable to import atari_py')
+    exit()
