@@ -34,6 +34,7 @@ from gym.envs.registration import register
 import cv2
 cv2.ocl.setUseOpenCL(False)
 
+import atari_py
 import numpy as np
 
 
@@ -264,19 +265,14 @@ def make_baselines(env_id, max_episode_steps=None):
 
 
 def register_atari():
-  try:
-    import atari_py
-    # If atari envs are available, re-register them with the OpenAI Baselines
-    # wrapper stack.
-    for game in atari_py.list_games():
-      name = ''.join([g.capitalize() for g in game.split('_')])
-      for version in ('v0', 'v4'):
-        register(
-            id='{}Baselines-{}'.format(name, version),
-            entry_point=partial(
-                make_baselines,
-                env_id='{}NoFrameskip-{}'.format(name, version),
-            ))
-  except ImportError:
-    print('ImportError: Unable to import atari_py')
-    exit()
+  # If atari envs are available, re-register them with the OpenAI Baselines
+  # wrapper stack.
+  for game in atari_py.list_games():
+    name = ''.join([g.capitalize() for g in game.split('_')])
+    for version in ('v0', 'v4'):
+      register(
+          id='{}Baselines-{}'.format(name, version),
+          entry_point=partial(
+              make_baselines,
+              env_id='{}NoFrameskip-{}'.format(name, version),
+          ))
