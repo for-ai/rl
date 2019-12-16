@@ -8,7 +8,6 @@ install:
   - cd ~/$TRAVIS_REPO_SLUG
   - sh ~/$TRAVIS_REPO_SLUG/setup.sh
   - git checkout $TRAVIS_BRANCH
-  - pip3 install --upgrade gym atari_py
 
 # command to run tests
 script:

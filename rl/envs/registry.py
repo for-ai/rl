@@ -33,7 +33,6 @@ def get_env(hparams):
   elif hparams.env in gym_ids:
     return _ENVS['GymEnv'](hparams)
   else:
-    print(gym_ids)
     raise Exception(
         "Environment with name %s cannot not be found" % hparams.env)
 

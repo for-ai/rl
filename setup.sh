@@ -112,9 +112,9 @@ while [ ! $# -eq 0 ]; do
 done
 
 check_requirements
-install_system_packages
 install_tensorflow
 install_python_packages
-install_coinrun
+#install_system_packages
+#install_coinrun
 
 echo '\nSetup completed.'
