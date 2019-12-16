@@ -6,7 +6,9 @@ python:
 install:
   - git clone https://github.com/$TRAVIS_REPO_SLUG.git ~/$TRAVIS_REPO_SLUG
   - cd ~/$TRAVIS_REPO_SLUG
-  - sh ~/$TRAVIS_REPO_SLUG/setup.sh
+  - git checkout $TRAVIS_BRANCH
+  - git pull
+  - sh setup.sh
 
 # command to run tests
 script:
@@ -20,7 +22,7 @@ script:
   - python3 train.py --sys local --hparams ddpg_cartpole --output_dir ddpg_cartpole_4workers --train_steps 200 --num_workers 4;
   - python3 train.py --sys local --hparams ddpg_coinrun --output_dir ddpg_coinrun --train_steps 200;
   - python3 train.py --sys local --hparams ppo_pong --output_dir ppo_pong --train_steps 200;
-  - export PYTHONPATH=${PYTHONPATH}:.  
+  - export PYTHONPATH=${PYTHONPATH}:.;
   - python3 tests/models/basic_test.py;
   - python3 tests/models/ddpg_test.py;
   - python3 tests/models/noisy_network_test.py;

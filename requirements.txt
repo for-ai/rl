@@ -2,9 +2,8 @@ dl-cloud
 requests>=2.19.1
 roboschool
 git+https://github.com/tensorflow/cleverhans.git@de5db266fdf47830f46c80cca53fd84fbbb542bf#egg=cleverhans
-gym>=0.12.5
+gym>=0.15.4
 tqdm
-mpi4py==3.0.0
 box2d-py
 opencv-python>=3.4.2.17
 atari_py>=0.1.7

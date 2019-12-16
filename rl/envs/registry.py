@@ -1,5 +1,6 @@
 import gym
 import tensorflow as tf
+from .atari import register_atari
 
 _ENVS = dict()
 _REWARDS = dict()
@@ -17,13 +18,16 @@ def register_reward(fn):
   return fn
 
 
-def get_gym_ids():
+def get_gym_ids(hparams):
   """ return the list of all gym environments worker_id"""
-  return [env_spec.id for env_spec in gym.envs.registry.all()]
+  if not hparams.atari_registry:
+    register_atari()
+    hparams.atari_registry = True
+  return [env.id for env in gym.envs.registry.all()]
 
 
 def get_env(hparams):
-  gym_ids = get_gym_ids()
+  gym_ids = get_gym_ids(hparams)
   if hparams.env in _ENVS:
     return _ENVS[hparams.env](hparams)
   elif hparams.env in gym_ids:
