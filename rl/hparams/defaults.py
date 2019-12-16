@@ -12,12 +12,8 @@ def default():
       env=None,
       agent=None,
       reward_augmentation=None,
-      lr = {
-            "lr": 0.001
-      },
-      lr_decay = {
-            "lr": "no_decay"
-      },
+      lr={"lr": 0.001},
+      lr_decay={"lr": "no_decay"},
       output_dir=None,
       memory="simple",
       batch_size=64,
@@ -27,4 +23,5 @@ def default():
       eval_interval=5000,
       global_step=0,  # global train steps
       total_step=0,  # global train and test steps
+      atari_registry=False  # indicate if Atari Baselines env have been added
   )

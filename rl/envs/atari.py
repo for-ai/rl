@@ -180,10 +180,11 @@ class FrameStack(gym.Wrapper):
     self.k = k
     self.frames = deque([], maxlen=k)
     shp = env.observation_space.shape
-    self.observation_space = spaces.Box(low=0,
-                                        high=255,
-                                        shape=(shp[:-1] + (shp[-1] * k,)),
-                                        dtype=env.observation_space.dtype)
+    self.observation_space = spaces.Box(
+        low=0,
+        high=255,
+        shape=(shp[:-1] + (shp[-1] * k,)),
+        dtype=env.observation_space.dtype)
 
   def reset(self):
     ob = self.env.reset()
@@ -228,10 +229,11 @@ class WarpFrame(gym.ObservationWrapper):
     gym.ObservationWrapper.__init__(self, env)
     self.width = 84
     self.height = 84
-    self.observation_space = spaces.Box(low=0,
-                                        high=255,
-                                        shape=(self.height, self.width, 1),
-                                        dtype=env.observation_space.dtype)
+    self.observation_space = spaces.Box(
+        low=0,
+        high=255,
+        shape=(self.height, self.width, 1),
+        dtype=env.observation_space.dtype)
 
   def observation(self, frame):
     """
@@ -261,18 +263,19 @@ def make_baselines(env_id, max_episode_steps=None):
   return env
 
 
-try:
-  import atari_py
-
-  # If atari envs are available, reregister them with the OpenAI Baselines
-  # wrapper stack.
-  for game in atari_py.list_games():
-    name = ''.join([g.capitalize() for g in game.split('_')])
-    for version in ('v0', 'v4'):
-      register(
-          id='{}Baselines-{}'.format(name, version),
-          entry_point=partial(
-              make_baselines,
-              env_id='{}NoFrameskip-{}'.format(name, version),))
-except ImportError:
-  pass
+def register_atari():
+  try:
+    import atari_py
+    # If atari envs are available, re-register them with the OpenAI Baselines
+    # wrapper stack.
+    for game in atari_py.list_games():
+      name = ''.join([g.capitalize() for g in game.split('_')])
+      for version in ('v0', 'v4'):
+        register(
+            id='{}Baselines-{}'.format(name, version),
+            entry_point=partial(
+                make_baselines,
+                env_id='{}NoFrameskip-{}'.format(name, version),
+            ))
+  except ImportError:
+    print('ImportError: Unable to import atari_py')
