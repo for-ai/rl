@@ -7,8 +7,9 @@ install:
   - git clone https://github.com/$TRAVIS_REPO_SLUG.git ~/$TRAVIS_REPO_SLUG
   - cd ~/$TRAVIS_REPO_SLUG
   - git checkout $TRAVIS_BRANCH
-  - sh ~/$TRAVIS_REPO_SLUG/setup.sh
-  
+  - git pull
+  - sh setup.sh
+
 # command to run tests
 script:
   - cd ~/$TRAVIS_REPO_SLUG/;
