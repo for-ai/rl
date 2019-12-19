@@ -102,5 +102,5 @@ def ddpg_carracing():
 def ddpg_coinrun():
   hps = ddpg()
   hps.action_function = "uniform_random_action"
-  hps.env = 'CoinRun'
+  hps.env = 'procgen-coinrun-v0'
   return hps

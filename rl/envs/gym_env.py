@@ -71,6 +71,8 @@ class GymEnv(Environment):
 
   def reset(self):
     """Resets the state of the environment and returns an initial observation."""
+    if 'procgen' in self._hparams.env:
+      self._env = gym.make(self._hparams.env)
     state = self._env.reset()
     if self._hparams.pixel_input:
       state = state.astype(np.int8)

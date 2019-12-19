@@ -21,9 +21,9 @@ Modular codebase for reinforcement learning models training, testing and visuali
 
 Example for recorded envrionment on various RL agents.
 
-| MountainCar-v0                         | Pendulum-v0                      | VideoPinball-v0                     | Tennis-v0                    |
-| -------------------------------------- | -------------------------------- | ----------------------------------- | ---------------------------- |
-| ![MountainCar-v0](gif/mountaincar.gif) | ![Pendulum-v0](gif/pendulum.gif) | ![VideoPinball-v0](gif/pinball.gif) | ![Tennis-v0](gif/tennis.gif) |
+| MountainCar-v0                         | Pendulum-v0                      | VideoPinball-v0                     | procgen-coinrun-v0            |
+| -------------------------------------- | -------------------------------- | ----------------------------------- | ----------------------------- |
+| ![MountainCar-v0](gif/mountaincar.gif) | ![Pendulum-v0](gif/pendulum.gif) | ![VideoPinball-v0](gif/pinball.gif) | ![Tennis-v0](gif/coinrun.gif) |
 
 ### Requirements
 It is recommended to install the codebase in a virtual environment ([virtualenv](https://pypi.org/project/virtualenv/) or [conda](https://conda.io/en/latest/)). 
@@ -40,7 +40,8 @@ You need to install the following for your system:
 - [TensorFlow](https://www.tensorflow.org/install)
 - [OpenAI Gym](https://gym.openai.com/docs/#installation)
     - Atari `pip install 'gym[atari]'`
-- [OpenAI CoinRun](https://github.com/openai/coinrun)
+- [OpenAI Atari](https://github.com/openai/atari-py)
+- [OpenAI ProcGen](https://github.com/openai/procgen)
 - [FFmpeg](https://ffmpeg.org/download.html)
 - Additional python packages `pip install -r ../requirements.txt`
 

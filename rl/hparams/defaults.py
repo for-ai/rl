@@ -21,7 +21,8 @@ def default():
       state_latent_size=256,
       state_processor="CNN",
       eval_interval=5000,
+      save_every=1000,  # for video recording game play
       global_step=0,  # global train steps
       total_step=0,  # global train and test steps
-      atari_registry=False  # indicate if Atari Baselines env have been added
+      atari_registry=False,  # indicate if Atari Baselines env have been added
   )
