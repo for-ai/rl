@@ -9,7 +9,7 @@ Modular codebase for reinforcement learning models training, testing and visuali
   - OpenAI [Gym](https://github.com/openai/gym)
     - support both `Discrete` and `Box` environments
     - render (`--render`) and save (`--record_video`) environment replay
-  - OpenAI [CoinRun](https://github.com/openai/coinrun)
+  - OpenAI [ProcGen](https://github.com/openai/procgen)
 - Model-free asynchronous training  (`--num_workers`)
 - Memory replay: [Simple](rl/memory/simple.py), [Proportional Prioritized Experience Replay](rl/memory/prioritized.py)
 - Modularized
