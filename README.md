@@ -9,6 +9,7 @@ Modular codebase for reinforcement learning models training, testing and visuali
   - OpenAI [Gym](https://github.com/openai/gym)
     - support both `Discrete` and `Box` environments
     - render (`--render`) and save (`--record_video`) environment replay
+  - OpenAI [Atari](https://github.com/openai/atari-py)
   - OpenAI [ProcGen](https://github.com/openai/procgen)
 - Model-free asynchronous training  (`--num_workers`)
 - Memory replay: [Simple](rl/memory/simple.py), [Proportional Prioritized Experience Replay](rl/memory/prioritized.py)
@@ -39,7 +40,6 @@ You need to install the following for your system:
 
 - [TensorFlow](https://www.tensorflow.org/install)
 - [OpenAI Gym](https://gym.openai.com/docs/#installation)
-    - Atari `pip install 'gym[atari]'`
 - [OpenAI Atari](https://github.com/openai/atari-py)
 - [OpenAI ProcGen](https://github.com/openai/procgen)
 - [FFmpeg](https://ffmpeg.org/download.html)
